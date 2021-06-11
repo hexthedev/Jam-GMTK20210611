@@ -1,0 +1,18 @@
+[submodule "Assets/Dependencies/HexCS"]
+	path = Assets/Dependencies/HexCS
+	url = https://github.com/hexthedev/HexCS.git
+[submodule "Assets/Dependencies/HexUN"]
+	path = Assets/Dependencies/HexUN
+	url = https://github.com/hexthedev/HexUN.git
+[submodule "Assets/Dependencies/HexUN-Input"]
+	path = Assets/Dependencies/HexUN-Input
+	url = https://github.com/hexthedev/HexUN-Input.git
+[submodule "Assets/Dependencies/UXUI"]
+	path = Assets/Dependencies/UXUI
+	url = https://github.com/hexthedev/HexUN-UXUI.git
+[submodule "Assets/Dependencies/HexCS-Data"]
+	path = Assets/Dependencies/HexCS-Data
+	url = https://github.com/hexthedev/HexCS-Data.git
+[submodule "Assets/Dependencies/HexUN-BasicAssets"]
+	path = Assets/Dependencies/HexUN-BasicAssets
+	url = https://github.com/hexthedev/HexUN-BasicAssets.git
