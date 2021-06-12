@@ -13,9 +13,6 @@ namespace GMTK2021
 
         public override EManhattanDirection InputDirection => EManhattanDirection.NONE;
 
-        public override bool IsPushable(SoObject pusher, GridElement<Tile> element, DiscreteVector2 direction)
-            => false;
-
         public override bool ReceivesMovement(GridElement<Tile> element) => true;
 
 

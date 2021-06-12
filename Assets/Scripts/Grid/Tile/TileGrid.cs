@@ -108,6 +108,23 @@ namespace GMTK2021
             return true;
         }
 
+        public void ReportGameState(GamestateReport report)
+        {
+            ElementwiseAction(ReportOnGamestate);
+
+            void ReportOnGamestate(Tile t, GridElement<Tile> element)
+            {
+                if(t.Object != null && t.Floor != null)
+                {
+                    SOFloorProperties fl = t.Floor;
+                    SoObject obj = t.Object;
+
+                    if (fl.PlayerWins && obj.IsPlayer) report.isPlayerOnGoal = true;
+                    if (fl.PlayerDies && obj.IsPlayer) report.isPlayerDead = true;
+                }
+            }
+        }
+
 
 
         private class ObjectTransaction

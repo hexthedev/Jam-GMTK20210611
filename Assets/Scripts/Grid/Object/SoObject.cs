@@ -19,11 +19,6 @@ namespace GMTK2021
         /// </summary>
         public abstract bool ReceivesMovement(GridElement<Tile> element);
 
-        /// <summary>
-        /// Can the pusher object push this
-        /// </summary>
-        public abstract bool IsPushable(SoObject pusher, GridElement<Tile> element, DiscreteVector2 direction);
-
 
 
 
@@ -40,13 +35,15 @@ namespace GMTK2021
 
 
 
-        protected bool IsPushable_IfPushedToEmpty(GridElement<Tile> element, DiscreteVector2 direction)
+        protected bool IsPushable_IfPushedToEmpty(DiscreteVector2 direction, MovementReport report, GridElement<Tile> element)
         {
             DiscreteVector2 target = element.Cooridnate + direction;
             if (!element.Grid.IsInBounds(target)) return false;
             
             Tile t = element.Grid.Get(target);
-            return t.Object == null;
+
+            if (t.Object == null) return true;
+            return t.Object.ResolvePushAttempt(direction, report, element.Grid.AsElement(target));
         }
 
     }
