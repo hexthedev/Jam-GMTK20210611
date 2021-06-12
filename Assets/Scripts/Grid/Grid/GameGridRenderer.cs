@@ -27,6 +27,8 @@ namespace GMTK2021
     [ExecuteAlways]
     public class GameGridRenderer : MonoBehaviour
     {
+        public bool autoInitalize = false;
+
         public SoTileTheme Theme;
         public SoGameGrid SerializedGrid;
 
@@ -48,7 +50,19 @@ namespace GMTK2021
 
         public float slideSpeed = 0.5f;
 
-        private bool _inputState = true;
+        private bool _inputState = false;
+        public bool InputState
+        {
+            get => InputState;
+            set 
+            {
+                if(_inputState != value)
+                {
+                    _inputState = value;
+                    _onInputState.Invoke(_inputState);
+                }
+            }
+        }
 
 
 
@@ -56,7 +70,14 @@ namespace GMTK2021
 
         private void OnEnable()
         {
-            InitGrid(SerializedGrid);
+            if(!Application.isPlaying || autoInitalize)
+            {
+                InitGrid(SerializedGrid);
+            }
+            else
+            {
+                Clear();
+            }
 #if UNITY_EDITOR
             EditorSceneManager.sceneSaved += EditorInitalizeGrid;
             EditorSceneManager.sceneSaved += EditorSaveGrid;
@@ -177,8 +198,9 @@ namespace GMTK2021
                 _objectRends.Add(targ[i], rends[i]);
             }
 
-            _inputState = true;
-            _onInputState.Invoke(true);
+            PerformStatusReport();
+
+            InputState = true;
         }
 
         private void RenderTick()
@@ -204,18 +226,22 @@ namespace GMTK2021
             {
                 if (_dataGrid.ResolveInput(Context.action.name, out TileGrid.ObjectTransaction[] trans))
                 {
-                    _inputState = false;
-                    _onInputState.Invoke(_inputState);
-
-                    GamestateReport report = new GamestateReport();
-                    _dataGrid.ReportGameState(report);
-                    _onGameState.Invoke(report);
+                    InputState = false;
 
                     RenderTick();
                     StartCoroutine(PerformAnimations(trans));
                 }
             }
         }
+
+        private void PerformStatusReport()
+        {
+            GamestateReport report = new GamestateReport();
+            _dataGrid.ReportGameState(report);
+            _onGameState.Invoke(report);
+        }
+
+
 
 
 
