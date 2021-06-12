@@ -1,6 +1,7 @@
 using HexCS.Core;
 
 using HexUN.Engine.Utilities;
+using HexUN.Events;
 
 using System.Collections;
 using System.Collections.Generic;
@@ -18,29 +19,13 @@ using static UnityEngine.InputSystem.InputAction;
 
 namespace GMTK2021
 {
-    [System.Serializable]
-    public class GameStateEvent : UnityEvent<GamestateReport> { }
-
-    [System.Serializable]
-    public class InputStateEvent : UnityEvent<bool> { }
-
     [ExecuteAlways]
     public class GameGridRenderer : MonoBehaviour
     {
-        public bool autoInitalize = false;
+        private const float cSlideSpeed = 0.25f;
 
+        [Header("Visual Options")]
         public SoTileTheme Theme;
-        public SoGameGrid SerializedGrid;
-
-        public GameStateEvent _onGameState;
-        public InputStateEvent _onInputState;
-
-        // Note: asusmes 1x1 prefabs
-        private DiscreteVector2 _size;
-
-        private TileGrid _dataGrid;
-        private Grid<TileRenderer> _renderGrid;
-        private Dictionary<DiscreteVector2, ObjectRenderer> _objectRends = new Dictionary<DiscreteVector2, ObjectRenderer>();
 
         [SerializeField]
         TileRenderer _tilePrefab;
@@ -51,12 +36,30 @@ namespace GMTK2021
         [SerializeField]
         private Transform parent;
 
-        public float slideSpeed = 0.5f;
+        [Header("Initalization")]
+        public bool autoInitalize = false;
 
+        [Header("Running Instance")]
+        public SoGameGrid SerializedGrid;
+
+
+        [Header("Events")]
+        public GamestateReportReliableEvent _onGameState;
+        public BooleanReliableEvent _onInputState;
+        public VoidReliableEvent _onAnimIn;
+        public VoidReliableEvent _onAnimOut;
+
+
+        // Note: asusmes 1x1 prefabs
         private bool _inputState = false;
+        private DiscreteVector2 _size;
+        private TileGrid _dataGrid;
+        private Grid<TileRenderer> _renderGrid;
+        private Dictionary<DiscreteVector2, ObjectRenderer> _objectRends = new Dictionary<DiscreteVector2, ObjectRenderer>();
+
         public bool InputState
         {
-            get => InputState;
+            get => _inputState;
             set 
             {
                 if(_inputState != value)
@@ -67,14 +70,12 @@ namespace GMTK2021
             }
         }
 
-
-
         #region Init, Save, Load
-
         private void OnEnable()
         {
             if(!Application.isPlaying || autoInitalize)
             {
+                InputState = true;
                 InitGrid(SerializedGrid);
             }
             else
@@ -165,6 +166,7 @@ namespace GMTK2021
 
 
 
+
         #region Rendering and Animations
         private IEnumerator PerformAnimations(TileGrid.ObjectTransaction[] trans)
         {
@@ -184,9 +186,9 @@ namespace GMTK2021
 
             float time = 0;
 
-            while (time < slideSpeed)
+            while (time < cSlideSpeed)
             {
-                foreach (ObjectRenderer rend in rends) rend.Slide(time / slideSpeed);
+                foreach (ObjectRenderer rend in rends) rend.Slide(time / cSlideSpeed);
                 time += Time.fixedDeltaTime;
                 yield return new WaitForFixedUpdate();
             }
@@ -216,6 +218,21 @@ namespace GMTK2021
 
 
 
+        public void AnimIn()
+        {
+            if (!autoInitalize)
+            {
+                _onAnimIn.Invoke();
+            }
+        }
+
+        public void AnimOut()
+        {
+            if (!autoInitalize)
+            {
+                _onAnimOut.Invoke();
+            }
+        }
 
 
 
@@ -224,7 +241,7 @@ namespace GMTK2021
 
         public void ReceiveInput(CallbackContext Context)
         {
-            if (_inputState == false) return;
+            if (InputState == false) return;
 
             if (Context.performed)
             {
@@ -244,14 +261,5 @@ namespace GMTK2021
             _dataGrid.ReportGameState(report);
             _onGameState.Invoke(report);
         }
-
-
-
-
-
-
-
-
-
     }
 }
