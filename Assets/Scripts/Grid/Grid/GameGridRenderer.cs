@@ -48,6 +48,9 @@ namespace GMTK2021
         [SerializeField]
         ObjectRenderer _objectPrefab;
 
+        [SerializeField]
+        private Transform parent;
+
         public float slideSpeed = 0.5f;
 
         private bool _inputState = false;
@@ -109,7 +112,7 @@ namespace GMTK2021
         public void InitGrid(SoGameGrid serializedGrid)
         {
             if (this == null) return;
-            UTGameObject.DestroyAllChildren_EditorSafe(gameObject);
+            UTGameObject.DestroyAllChildren_EditorSafe(parent.gameObject);
 
             _size = new DiscreteVector2(serializedGrid.Width, serializedGrid.Height);
 
@@ -133,16 +136,17 @@ namespace GMTK2021
 
             foreach (KeyValuePair<DiscreteVector2, ObjectRenderer> or in _objectRends)
             {
-                or.Value.transform.SetParent(transform, true);
+                or.Value.transform.SetParent(parent, true);
                 or.Value.transform.localPosition = new UnityEngine.Vector3(or.Key.X, or.Key.Y, or.Value.transform.localPosition.z);
             }
 
+            parent.transform.localPosition = new Vector3(-_dataGrid.Size.X / 2 + 0.5f, -_dataGrid.Size.Y / 2 + 0.5f, 0);
             RenderTick();
         }
 
         public void Clear()
         {
-            UTGameObject.DestroyAllChildren(gameObject);
+            UTGameObject.DestroyAllChildren(parent.gameObject);
 
             _dataGrid = null;
             _renderGrid = null;
@@ -151,7 +155,7 @@ namespace GMTK2021
 
         private TileRenderer SpawnRenderer(DiscreteVector2 coord)
         {
-            TileRenderer renderer = Instantiate(_tilePrefab, transform);
+            TileRenderer renderer = Instantiate(_tilePrefab, parent);
             renderer.ManagedTile = _dataGrid.Get(coord);
             renderer.Theme = Theme;
             renderer.transform.localPosition = new Vector3(coord.X, coord.Y);
