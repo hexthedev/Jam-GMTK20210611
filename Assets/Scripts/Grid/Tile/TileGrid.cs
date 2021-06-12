@@ -43,6 +43,7 @@ namespace GMTK2021
             foreach (GridElement<Tile> el in inputReport.CanReceiveInput)
                 Get(el.Cooridnate).Object.ResolveMovementRecieved(inputDirection, moveReport, el);
 
+            if (moveReport.CanMoveList.Count() == 0) return false;
 
             ObjectTransaction[] transactions = GetTransactions(moveReport, inputDirection);
             PerformObjectTranscations(transactions);

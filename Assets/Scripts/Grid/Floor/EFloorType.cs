@@ -9,5 +9,6 @@ namespace GMTK2021
         Base, 
         Wall,
         Pit,
+        Goal
     }
 }

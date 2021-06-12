@@ -12,10 +12,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1e1ca3dd0870ba0499cdb1d01bd8c6b3, type: 3}
   m_Name: BaseTheme
   m_EditorClassIdentifier: 
-  Floor_Background: {fileID: 2100000, guid: c8aa4b37fdac1be47a723ab844ee4d44, type: 2}
-  Floor_Base: {fileID: 2100000, guid: 7b2b3c1aca2d329469d9e445571e4f21, type: 2}
-  Floor_Wall: {fileID: 2100000, guid: f8a69128d75d7da44a3124c4f6ec5de7, type: 2}
-  Floor_Pit: {fileID: 2100000, guid: 4636e3f9c9c643b4d8e836feab3deb6b, type: 2}
+  Background: {fileID: 2100000, guid: 7b2b3c1aca2d329469d9e445571e4f21, type: 2}
+  Floors:
+  - {fileID: 11400000, guid: 26be8ddef0c9fa94aa0dd6c004b8b64a, type: 2}
+  - {fileID: 11400000, guid: 467dfcc6ddddb254092f4262cf492352, type: 2}
+  - {fileID: 11400000, guid: 655424cb4daab204589669170ec2e0f8, type: 2}
+  FloorMaterials:
+  - {fileID: 2100000, guid: 7b2b3c1aca2d329469d9e445571e4f21, type: 2}
+  - {fileID: 2100000, guid: fa9ca11cbf1c1c64d8efe6ef71eb7687, type: 2}
+  - {fileID: 2100000, guid: 4636e3f9c9c643b4d8e836feab3deb6b, type: 2}
   Objects:
   - {fileID: 11400000, guid: 5883b95eaf1dc074a98f526ec5c0eeb9, type: 2}
   - {fileID: 11400000, guid: 4ea6df4570016284b85109cea776ec62, type: 2}

@@ -7,14 +7,12 @@ namespace GMTK2021
     [CreateAssetMenu(fileName = nameof(SoTileTheme), menuName = "GMTK/TileTheme")]
     public class SoTileTheme : ScriptableObject
     {
-        public Material Floor_Background;
+        public Material Background;
 
-        public Material Floor_Base;
-        public Material Floor_Wall;
-        public Material Floor_Pit;
+        public List<SOFloorProperties> Floors;
+        public List<Material> FloorMaterials;
 
         public List<SoObject> Objects;
-
         public List<Material> MaterialMap;
 
 
@@ -26,16 +24,11 @@ namespace GMTK2021
         }
 
 
-        public Material GetFloorMat(EFloorType type)
+        public Material GetFloorMat(SOFloorProperties prop)
         {
-            switch (type)
-            {
-                case EFloorType.Base: return Floor_Base;
-                case EFloorType.Pit: return Floor_Pit;
-                case EFloorType.Wall: return Floor_Wall;
-            }
-
-            return null;
+            int index = Floors.IndexOf(prop);
+            if (index == -1) return null;
+            return FloorMaterials[index];
         }
     }
 }

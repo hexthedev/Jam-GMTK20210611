@@ -15,5 +15,6 @@ namespace GMTK2021
         public bool BlockLeft = false;
 
         public bool PlayerDies = false;
+        public bool PlayerWins = false;
     }
 }

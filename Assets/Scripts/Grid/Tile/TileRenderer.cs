@@ -26,7 +26,7 @@ namespace GMTK2021
                 return;
             }
 
-            _backgroundRenderer.material = Theme.Floor_Background;
+            _backgroundRenderer.material = Theme.Background;
 
             RenderFloor(ManagedTile.Floor);
             RenderObject(ManagedTile.Object);
@@ -40,7 +40,8 @@ namespace GMTK2021
                 return;
             }
 
-            _foregroundRenderer.material = Theme.GetFloorMat(props.Type);
+            _foregroundRenderer.enabled = true;
+            _foregroundRenderer.material = Theme.GetFloorMat(props);
         }
 
         private void RenderObject(SoObject props)
