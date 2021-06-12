@@ -99,9 +99,9 @@ namespace GMTK2021
             foreach(TileGrid.ObjectTransaction obt in trans)
             {
                 ObjectRenderer rend = _objectRends[obt.LastIndex];
-                rend.Origin = new UnityEngine.Vector2(obt.LastIndex.X, obt.LastIndex.Y);
-                rend.Target = new UnityEngine.Vector2(obt.NextIndex.X, obt.NextIndex.Y);
-                rend.IsSliding = true;
+
+                DiscreteVector2 direction = obt.NextIndex - obt.LastIndex;
+                rend.PrepareSlide(new UnityEngine.Vector2(direction.X, direction.Y));
                 rends.Add(rend);
                 _objectRends.Remove(obt.LastIndex);
                 targ.Add(obt.NextIndex);
@@ -119,7 +119,7 @@ namespace GMTK2021
             foreach (ObjectRenderer rend in rends)
             {
                 rend.Slide(1);
-                rend.IsSliding = false;
+                rend.StopSlide();
             }
 
             for(int i = 0; i<rends.Count; i++)
@@ -145,8 +145,6 @@ namespace GMTK2021
 
             _dataGrid = TileGrid.ConstructFrom(_size, Application.isPlaying ? SerializedGrid.CopyTiles() : SerializedGrid.TileGrid);
 
-
-
             _renderGrid = new Grid<TileRenderer>(_size, SpawnRenderer);
 
             _objectRends.Clear();
@@ -154,14 +152,19 @@ namespace GMTK2021
                 (TileRenderer tr, GridElement<TileRenderer> i) =>
                 {
                     ObjectRenderer obr = tr.MakeObjectRenderer(_objectPrefab);
-                    if (obr != null) _objectRends.Add(i.Cooridnate, obr);
+                    
+                    if (obr != null)
+                    {
+                        _objectRends.Add(i.Cooridnate, obr);
+                        obr.SetMode(true);
+                    }
                 }
             );
 
             foreach(KeyValuePair<DiscreteVector2, ObjectRenderer> or in _objectRends)
             {
                 or.Value.transform.SetParent(transform, true);
-                or.Value.SetOrigin(new UnityEngine.Vector2(or.Key.X, or.Key.Y));
+                or.Value.transform.localPosition = new UnityEngine.Vector3(or.Key.X, or.Key.Y, or.Value.transform.localPosition.z);
             }
 
             RenderTick();

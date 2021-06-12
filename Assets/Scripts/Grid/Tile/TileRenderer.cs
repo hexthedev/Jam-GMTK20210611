@@ -45,7 +45,7 @@ namespace GMTK2021
             if(ManagedTile.Object != null)
             {
                 ObjectRenderer rend = Instantiate(prefab);
-                rend.Material = Theme.GetForObject(ManagedTile.Object);
+                rend.SetArt(Theme.GetForObject(ManagedTile.Object));
                 return rend;
             }
 
