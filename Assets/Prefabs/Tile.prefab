@@ -304,8 +304,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 525d16686ab85b74a861ee300178357b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  Theme: {fileID: 0}
   ManagedTile:
     Floor: {fileID: 0}
+    Object: {fileID: 0}
   _backgroundRenderer: {fileID: 8253096229940848567}
   _foregroundRenderer: {fileID: 5950858621155396795}
   _objectRenderer: {fileID: 1143574702494626104}

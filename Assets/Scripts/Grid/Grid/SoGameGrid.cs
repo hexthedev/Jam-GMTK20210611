@@ -9,14 +9,14 @@ namespace GMTK2021
     [CreateAssetMenu(fileName = "GameGrid", menuName = "GMTK/GameGrid")]
     public class SoGameGrid : ScriptableObject
     {
+        public int Width;
+        public int Height;
+
         [SerializeField]
         private Tile _defaultTile;
 
         [SerializeField]
         private Tile[] _tileGrid;
-
-        public int Width;
-        public int Height;
 
         public Tile[] TileGrid { 
             get {
@@ -30,6 +30,18 @@ namespace GMTK2021
 
                 return _tileGrid;
             }
+        }
+
+        public Tile[] CopyTiles()
+        {
+            Tile[] tiles = new Tile[_tileGrid.Length];
+
+            for(int i = 0; i<tiles.Length; i++)
+            {
+                tiles[i] = _tileGrid[i].Copy();
+            }
+
+            return tiles;
         }
 
     }

@@ -7,11 +7,25 @@ namespace GMTK2021
     [CreateAssetMenu(fileName = nameof(SoTileTheme), menuName = "GMTK/TileTheme")]
     public class SoTileTheme : ScriptableObject
     {
+        public Material Floor_Background;
+
         public Material Floor_Base;
         public Material Floor_Wall;
         public Material Floor_Pit;
-    
-    
+
+        public List<SoObject> Objects;
+
+        public List<Material> MaterialMap;
+
+
+        public Material GetForObject(SoObject obj)
+        {
+            int index = Objects.IndexOf(obj);
+            if (index == -1) return null;
+            return MaterialMap[index];
+        }
+
+
         public Material GetFloorMat(EFloorType type)
         {
             switch (type)

@@ -1,3 +1,5 @@
+using HexCS.Core;
+
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -9,8 +11,11 @@ namespace GMTK2021
     {
         public SOFloorProperties Floor;
 
-        public IObject Object;
+        public SoObject Object;
 
-        public Tile Copy() => new Tile() { Floor = Floor, Object = Object };
+        public Tile Copy() => new Tile() { 
+            Floor = Floor, 
+            Object = Object 
+        };
     }
 }

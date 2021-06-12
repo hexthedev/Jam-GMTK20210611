@@ -26,20 +26,33 @@ namespace GMTK2021
                 return;
             }
 
+            _backgroundRenderer.material = Theme.Floor_Background;
+
             RenderFloor(ManagedTile.Floor);
+            RenderObject(ManagedTile.Object);
         }
 
         private void RenderFloor(SOFloorProperties props)
         {
             if(props == null)
             {
-                _backgroundRenderer.enabled = false;
                 _foregroundRenderer.enabled = false;
                 return;
             }
 
-            _backgroundRenderer.enabled = false;
             _foregroundRenderer.material = Theme.GetFloorMat(props.Type);
+        }
+
+        private void RenderObject(SoObject props)
+        {
+            if(props == null)
+            {
+                _objectRenderer.enabled = false;
+                return;
+            }
+
+            _objectRenderer.material = Theme.GetForObject(props);
+            _objectRenderer.enabled = true;
         }
 
         private void DisableAllRenderers()

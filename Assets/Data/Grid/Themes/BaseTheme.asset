@@ -12,6 +12,27 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1e1ca3dd0870ba0499cdb1d01bd8c6b3, type: 3}
   m_Name: BaseTheme
   m_EditorClassIdentifier: 
-  Floor_Base: {fileID: 2100000, guid: 2dd33e2cafcd5864d8709b6a8670c498, type: 2}
+  Floor_Background: {fileID: 2100000, guid: c8aa4b37fdac1be47a723ab844ee4d44, type: 2}
+  Floor_Base: {fileID: 2100000, guid: 7b2b3c1aca2d329469d9e445571e4f21, type: 2}
   Floor_Wall: {fileID: 2100000, guid: f8a69128d75d7da44a3124c4f6ec5de7, type: 2}
-  Floor_Pit: {fileID: 2100000, guid: c2b4d1c1e78a3824f8cf5a8ab477d99a, type: 2}
+  Floor_Pit: {fileID: 2100000, guid: 4636e3f9c9c643b4d8e836feab3deb6b, type: 2}
+  Objects:
+  - {fileID: 11400000, guid: 5883b95eaf1dc074a98f526ec5c0eeb9, type: 2}
+  - {fileID: 11400000, guid: 4ea6df4570016284b85109cea776ec62, type: 2}
+  - {fileID: 11400000, guid: 5bb0138aaf11d624094c233584a0ee08, type: 2}
+  - {fileID: 11400000, guid: eb699aa11b85db243b21e4430b22a41d, type: 2}
+  - {fileID: 11400000, guid: 17e5e79df7ac3d84390f257d23066636, type: 2}
+  - {fileID: 11400000, guid: 0258aaaef1a9daa4fa5190edde1c8b39, type: 2}
+  - {fileID: 11400000, guid: 90f90060e23ed884fac0823be219f0d9, type: 2}
+  - {fileID: 11400000, guid: 6182cd9e8fe7f9f40a48afde7d80157f, type: 2}
+  - {fileID: 11400000, guid: 4dc51d06096e3c647b0c8c4813f01347, type: 2}
+  MaterialMap:
+  - {fileID: 2100000, guid: eb807131f1333fd4ca683d2d568ed676, type: 2}
+  - {fileID: 2100000, guid: 9fec5ac002ecf4e46a8672f56aba9db8, type: 2}
+  - {fileID: 2100000, guid: a1b16d8e0ac668846a6f031efef79d50, type: 2}
+  - {fileID: 2100000, guid: fff87bbfb6c560943b34e2d0b5122645, type: 2}
+  - {fileID: 2100000, guid: 460c97004dcd36943910387b1589198c, type: 2}
+  - {fileID: 2100000, guid: 620e4bbee89020042b9b53503c1910bd, type: 2}
+  - {fileID: 2100000, guid: c8db7b115e913e94ea4ec89a1d048912, type: 2}
+  - {fileID: 2100000, guid: fd0bb436985c03645adf88a640091c92, type: 2}
+  - {fileID: 2100000, guid: 526c0a02fc883444eb35fb435b06ccfb, type: 2}
