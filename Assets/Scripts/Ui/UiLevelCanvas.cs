@@ -7,11 +7,17 @@ namespace GMTK2021
     public class UiLevelCanvas : MonoBehaviour
     {
         public UiVictory UiVictory;
+        public UiInputGate UiInputGate;
 
         public void HandleGameState(GamestateReport rep)
         {
             UiVictory.IsOver = rep.isPlayerDead || rep.isPlayerOnGoal;
             UiVictory.IsWon = rep.isPlayerOnGoal;
+        }
+
+        public void HandleInputState(bool state)
+        {
+            UiInputGate.SetInputEnabled = state;
         }
     }
 }

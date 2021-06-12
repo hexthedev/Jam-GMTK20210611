@@ -27,9 +27,13 @@ namespace GMTK2021
         /// <summary>
         /// Resolves an input by action name. Returns true if at least one thing moves
         /// </summary>
-        public bool ResolveInput(string input)
+        public bool ResolveInput(string input, out ObjectTransaction[] transactions)
         {
-            if (input == "Undo") return Undo();
+            transactions = null;
+            if (input == "Undo")
+            {
+                return Undo(out transactions);
+            }
 
             InputReport inputReport = new InputReport();
             ElementwiseAction((t, e) => { if (t.Object != null) t.Object.ResolveInputRecieved(input, inputReport, e);});
@@ -45,7 +49,7 @@ namespace GMTK2021
 
             if (moveReport.CanMoveList.Count() == 0) return false;
 
-            ObjectTransaction[] transactions = GetTransactions(moveReport, inputDirection);
+            transactions = GetTransactions(moveReport, inputDirection);
             PerformObjectTranscations(transactions);
             _history.Push(transactions);
             return true;
@@ -86,13 +90,14 @@ namespace GMTK2021
             }
         }
 
-        private bool Undo()
+        private bool Undo(out ObjectTransaction[] inverse)
         {
+            inverse = null;
             if (_history.Count == 0) return false;
 
             ObjectTransaction[] LastMove = _history.Pop();
 
-            ObjectTransaction[] inverse = new ObjectTransaction[LastMove.Length];
+            inverse = new ObjectTransaction[LastMove.Length];
 
             for (int i = 0; i < LastMove.Length; i++)
             {
@@ -127,7 +132,7 @@ namespace GMTK2021
 
 
 
-        private class ObjectTransaction
+        public class ObjectTransaction
         {
             public SoObject TransactionObject;
             public DiscreteVector2 LastIndex;

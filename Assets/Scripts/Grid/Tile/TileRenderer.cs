@@ -14,9 +14,6 @@ namespace GMTK2021
         [SerializeField]
         private MeshRenderer _foregroundRenderer;
 
-        [SerializeField]
-        private MeshRenderer _objectRenderer;
-
 
         public void RenderTile()
         {
@@ -29,7 +26,6 @@ namespace GMTK2021
             _backgroundRenderer.material = Theme.Background;
 
             RenderFloor(ManagedTile.Floor);
-            RenderObject(ManagedTile.Object);
         }
 
         private void RenderFloor(SOFloorProperties props)
@@ -44,23 +40,22 @@ namespace GMTK2021
             _foregroundRenderer.material = Theme.GetFloorMat(props);
         }
 
-        private void RenderObject(SoObject props)
+        public ObjectRenderer MakeObjectRenderer(ObjectRenderer prefab)
         {
-            if(props == null)
+            if(ManagedTile.Object != null)
             {
-                _objectRenderer.enabled = false;
-                return;
+                ObjectRenderer rend = Instantiate(prefab);
+                rend.Material = Theme.GetForObject(ManagedTile.Object);
+                return rend;
             }
 
-            _objectRenderer.material = Theme.GetForObject(props);
-            _objectRenderer.enabled = true;
+            return null;
         }
 
         private void DisableAllRenderers()
         {
             _backgroundRenderer.enabled = false;
             _foregroundRenderer.enabled = false;
-            _objectRenderer.enabled = false;
         }
     }
 }
