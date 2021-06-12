@@ -16,9 +16,23 @@ namespace GMTK2021
 
         public override EManhattanDirection InputDirection => direction;
 
-        public override bool IsPushable(SoObject pusher, DiscreteVector2 position, DiscreteVector2 direction, Grid<Tile> grid)
-            => IsPushable_IfPushedToEmpty(position, direction, grid);
+        public override bool IsPushable(SoObject pusher, GridElement<Tile> element, DiscreteVector2 direction)
+            => IsPushable_IfPushedToEmpty(element, direction);
 
-        public override bool ReceivesMovement(DiscreteVector2 position, Grid<Tile> grid) => false;
+        public override bool ReceivesMovement(GridElement<Tile> element) => false;
+
+        public override void ResolveInputRecieved(string input, InputReport report, GridElement<Tile> element) { return; }
+
+        public override void ResolveMovementRecieved(DiscreteVector2 direction, MovementReport report, GridElement<Tile> element)
+        {
+            return;
+        }
+
+        public override bool ResolvePushAttempt(DiscreteVector2 direction, MovementReport report, GridElement<Tile> element)
+        {
+            bool res = IsPushable_IfPushedToEmpty(element, direction);
+            if (res) report.PushedMove.Add(element);
+            return res;
+        }
     }
 }

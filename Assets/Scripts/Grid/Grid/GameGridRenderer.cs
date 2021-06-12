@@ -55,7 +55,7 @@ namespace GMTK2021
 
         private void RenderTick()
         {
-            _renderGrid.PerformOnTiles(DoRender);
+            _renderGrid.ElementwiseAction(DoRender);
             void DoRender(TileRenderer rend) => rend.RenderTile();
         }
 

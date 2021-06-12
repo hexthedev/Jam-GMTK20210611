@@ -1,48 +1,62 @@
 using HexCS.Core;
 
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 
-using UnityEngine;
 
 namespace GMTK2021
 {
     /// <summary>
-    /// Grid management
+    /// Manages a grid and provides basic grid manupulation api. Layed out in x y format. So index is x + y * width, starting bottom left.
     /// </summary>
     public class Grid<T>
     {
-        // NOTE: Layed out in x y format. So index is x + y * width, starting bottom left.
+        private Func<DiscreteVector2, T> _defaulElementFactory;
 
-        public Func<DiscreteVector2, T> DefaulElementCreator { get; private set; }
-
+        /// <summary>
+        /// Flat array of all elements
+        /// </summary>
         public T[] Array { get; private set; }
 
+        /// <summary>
+        /// Size of the array
+        /// </summary>
         public DiscreteVector2 Size { get; private set; }
 
-        public Grid(DiscreteVector2 size, Func<DiscreteVector2, T> defaultElementCreator)
+        /// <summary>
+        /// Constructor
+        /// </summary>
+        public Grid(DiscreteVector2 size, Func<DiscreteVector2, T> defaultElementFactory)
         {
             Size = size;
-            DefaulElementCreator = defaultElementCreator;
-            Array = UTArray.ConstructArray(Size.Combinations, (i) => DefaulElementCreator(GetSplitIndex(i)));
+            _defaulElementFactory = defaultElementFactory;
+            Array = UTArray.ConstructArray(Size.Combinations, (i) => _defaulElementFactory(GetSplitIndex(i)));
         }
 
-        public void PerformOnTiles(Action<T> action)
+        /// <summary>
+        /// Do something with each element
+        /// </summary>
+        public void ElementwiseAction(Action<T> action)
         {
             foreach (T tile in Array) action(tile);
         }
 
-        public void PerformOnTiles(Action<T, DiscreteVector2, Grid<T>> action)
+        /// <summary>
+        /// Do something on each element with it's coordinate and a grid reference
+        /// </summary>
+        public void ElementwiseAction(Action<T, GridElement<T>> action)
         {
             for (int i = 0; i < Array.Length; i++)
             {
-                action(Array[i], GetSplitIndex(i), this);
+                action(Array[i], AsElement(GetSplitIndex(i)));
             }
         }
 
-        public DiscreteVector2[] GetTilesWhere(Predicate<T> condition)
+        /// <summary>
+        /// Returns coordinates of elements where condition is met
+        /// </summary>
+        public DiscreteVector2[] ElementsWhere(Predicate<T> condition)
         {
             List<DiscreteVector2> tiles = new List<DiscreteVector2>();
 
@@ -54,7 +68,10 @@ namespace GMTK2021
             return tiles.ToArray();
         }
 
-        public T[] GetManhattan(DiscreteVector2 target)
+        /// <summary>
+        /// Returns all neighbours based on manhattan movement
+        /// </summary>
+        public T[] GetManhattanNeighbours(DiscreteVector2 target)
         {
             DiscreteVector2[] candidates = new DiscreteVector2[]
             {
@@ -72,14 +89,34 @@ namespace GMTK2021
             return mans.ToArray();
         }
 
+        /// <summary>
+        /// Is the cooridnate inbounds
+        /// </summary>
         public bool IsInBounds(DiscreteVector2 coord)
         {
             return !(coord.X < 0 || coord.Y < 0 || coord.X >= Size.X || coord.Y >= Size.Y);
         }
 
+        public GridElement<T> AsElement(DiscreteVector2 coordinate) => new GridElement<T>() { Cooridnate = coordinate, Grid = this };
+
+        /// <summary>
+        /// Get an element by coordinate
+        /// </summary>
         public T Get(DiscreteVector2 coord) => Array[GetFlatIndex(coord)];
+
+        /// <summary>
+        /// Set an element by cooridnate
+        /// </summary>
         public void Set(DiscreteVector2 coord, T value) => Array[GetFlatIndex(coord)] = value;
+
+        /// <summary>
+        /// Convert from coordinate to flat index
+        /// </summary>
         public int GetFlatIndex(DiscreteVector2 coord) => coord.X + Size.X * coord.Y;
+
+        /// <summary>
+        /// Convert from flat index to cooridnate
+        /// </summary>
         public DiscreteVector2 GetSplitIndex(int flat) => new DiscreteVector2( flat%Size.Y, flat/Size.Y);
     }
 }
