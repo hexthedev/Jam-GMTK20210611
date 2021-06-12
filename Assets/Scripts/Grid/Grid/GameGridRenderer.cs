@@ -12,6 +12,7 @@ using UnityEditor.SceneManagement;
 
 using UnityEngine;
 using UnityEngine.Events;
+using UnityEngine.SceneManagement;
 
 using static UnityEngine.InputSystem.InputAction;
 
@@ -37,7 +38,6 @@ namespace GMTK2021
 
         private TileGrid _dataGrid;
         private Grid<TileRenderer> _renderGrid;
-
         private Dictionary<DiscreteVector2, ObjectRenderer> _objectRends = new Dictionary<DiscreteVector2, ObjectRenderer>();
 
         [SerializeField]
@@ -50,23 +50,151 @@ namespace GMTK2021
 
         private bool _inputState = true;
 
+
+
+        #region Init, Save, Load
+
         private void OnEnable()
         {
-            InitGrid();
+            InitGrid(SerializedGrid);
 #if UNITY_EDITOR
-            EditorSceneManager.sceneSaved += t => InitGrid();
-            EditorSceneManager.sceneSaved += t => SaveGrid();
+            EditorSceneManager.sceneSaved += EditorInitalizeGrid;
+            EditorSceneManager.sceneSaved += EditorSaveGrid;
 #endif
         }
 
         private void OnDisable()
         {
-            SaveGrid();
+            SaveGrid(SerializedGrid);
 #if UNITY_EDITOR
-            EditorSceneManager.sceneSaved -= t => SaveGrid();
-            EditorSceneManager.sceneSaved -= t => InitGrid();
+            EditorSceneManager.sceneSaved -= EditorSaveGrid;
+            EditorSceneManager.sceneSaved -= EditorInitalizeGrid;
 #endif
         }
+
+
+#if UNITY_EDITOR
+        [ContextMenu("ReloadSerializedGrid")]
+        private void EditorInitalizeGrid(Scene s) => InitGrid(SerializedGrid);
+
+        [ContextMenu("SaveGrid")]
+        private void EditorSaveGrid(Scene s) => SaveGrid(SerializedGrid);
+#endif
+        public void SaveGrid(SoGameGrid serializedGrid)
+        {
+            EditorUtility.SetDirty(serializedGrid);
+        }
+
+        public void InitGrid(SoGameGrid serializedGrid)
+        {
+            if (this == null) return;
+            UTGameObject.DestroyAllChildren_EditorSafe(gameObject);
+
+            _size = new DiscreteVector2(serializedGrid.Width, serializedGrid.Height);
+
+            _dataGrid = TileGrid.ConstructFrom(_size, Application.isPlaying ? serializedGrid.CopyTiles() : serializedGrid.TileGrid);
+
+            _renderGrid = new Grid<TileRenderer>(_size, SpawnRenderer);
+
+            _objectRends.Clear();
+            _renderGrid.ElementwiseAction(
+                (TileRenderer tr, GridElement<TileRenderer> i) =>
+                {
+                    ObjectRenderer obr = tr.MakeObjectRenderer(_objectPrefab);
+
+                    if (obr != null)
+                    {
+                        _objectRends.Add(i.Cooridnate, obr);
+                        obr.SetMode(true);
+                    }
+                }
+            );
+
+            foreach (KeyValuePair<DiscreteVector2, ObjectRenderer> or in _objectRends)
+            {
+                or.Value.transform.SetParent(transform, true);
+                or.Value.transform.localPosition = new UnityEngine.Vector3(or.Key.X, or.Key.Y, or.Value.transform.localPosition.z);
+            }
+
+            RenderTick();
+        }
+
+        public void Clear()
+        {
+            UTGameObject.DestroyAllChildren(gameObject);
+
+            _dataGrid = null;
+            _renderGrid = null;
+            _objectRends.Clear();
+        }
+
+        private TileRenderer SpawnRenderer(DiscreteVector2 coord)
+        {
+            TileRenderer renderer = Instantiate(_tilePrefab, transform);
+            renderer.ManagedTile = _dataGrid.Get(coord);
+            renderer.Theme = Theme;
+            renderer.transform.localPosition = new Vector3(coord.X, coord.Y);
+            return renderer;
+        }
+        #endregion
+
+
+
+        #region Rendering and Animations
+        private IEnumerator PerformAnimations(TileGrid.ObjectTransaction[] trans)
+        {
+            List<ObjectRenderer> rends = new List<ObjectRenderer>();
+            List<DiscreteVector2> targ = new List<DiscreteVector2>();
+
+            foreach (TileGrid.ObjectTransaction obt in trans)
+            {
+                ObjectRenderer rend = _objectRends[obt.LastIndex];
+
+                DiscreteVector2 direction = obt.NextIndex - obt.LastIndex;
+                rend.PrepareSlide(new UnityEngine.Vector2(direction.X, direction.Y));
+                rends.Add(rend);
+                _objectRends.Remove(obt.LastIndex);
+                targ.Add(obt.NextIndex);
+            }
+
+            float time = 0;
+
+            while (time < slideSpeed)
+            {
+                foreach (ObjectRenderer rend in rends) rend.Slide(time / slideSpeed);
+                time += Time.fixedDeltaTime;
+                yield return new WaitForFixedUpdate();
+            }
+
+            foreach (ObjectRenderer rend in rends)
+            {
+                rend.Slide(1);
+                rend.StopSlide();
+            }
+
+            for (int i = 0; i < rends.Count; i++)
+            {
+                _objectRends.Add(targ[i], rends[i]);
+            }
+
+            _inputState = true;
+            _onInputState.Invoke(true);
+        }
+
+        private void RenderTick()
+        {
+            _renderGrid.ElementwiseAction(DoRender);
+            void DoRender(TileRenderer rend) => rend.RenderTile();
+        }
+        #endregion
+
+
+
+
+
+
+
+
 
         public void ReceiveInput(CallbackContext Context)
         {
@@ -91,107 +219,9 @@ namespace GMTK2021
 
 
 
-        private IEnumerator PerformAnimations(TileGrid.ObjectTransaction[] trans)
-        {
-            List<ObjectRenderer> rends = new List<ObjectRenderer>();
-            List<DiscreteVector2> targ = new List<DiscreteVector2>();
-
-            foreach(TileGrid.ObjectTransaction obt in trans)
-            {
-                ObjectRenderer rend = _objectRends[obt.LastIndex];
-
-                DiscreteVector2 direction = obt.NextIndex - obt.LastIndex;
-                rend.PrepareSlide(new UnityEngine.Vector2(direction.X, direction.Y));
-                rends.Add(rend);
-                _objectRends.Remove(obt.LastIndex);
-                targ.Add(obt.NextIndex);
-            }
-
-            float time = 0;
-
-            while(time < slideSpeed)
-            {
-                foreach (ObjectRenderer rend in rends) rend.Slide(time/slideSpeed);
-                time += Time.fixedDeltaTime;
-                yield return new WaitForFixedUpdate();
-            }
-
-            foreach (ObjectRenderer rend in rends)
-            {
-                rend.Slide(1);
-                rend.StopSlide();
-            }
-
-            for(int i = 0; i<rends.Count; i++)
-            {
-                _objectRends.Add(targ[i], rends[i]);
-            }
-
-            _inputState = true;
-            _onInputState.Invoke(true);
-        }
 
 
 
 
-
-        [ContextMenu("ReloadSerializedGrid")]
-        private void InitGrid()
-        {
-            if (this == null) return;
-            UTGameObject.DestroyAllChildren_EditorSafe(gameObject);
-
-            _size = new DiscreteVector2(SerializedGrid.Width, SerializedGrid.Height);
-
-            _dataGrid = TileGrid.ConstructFrom(_size, Application.isPlaying ? SerializedGrid.CopyTiles() : SerializedGrid.TileGrid);
-
-            _renderGrid = new Grid<TileRenderer>(_size, SpawnRenderer);
-
-            _objectRends.Clear();
-            _renderGrid.ElementwiseAction(
-                (TileRenderer tr, GridElement<TileRenderer> i) =>
-                {
-                    ObjectRenderer obr = tr.MakeObjectRenderer(_objectPrefab);
-                    
-                    if (obr != null)
-                    {
-                        _objectRends.Add(i.Cooridnate, obr);
-                        obr.SetMode(true);
-                    }
-                }
-            );
-
-            foreach(KeyValuePair<DiscreteVector2, ObjectRenderer> or in _objectRends)
-            {
-                or.Value.transform.SetParent(transform, true);
-                or.Value.transform.localPosition = new UnityEngine.Vector3(or.Key.X, or.Key.Y, or.Value.transform.localPosition.z);
-            }
-
-            RenderTick();
-        }
-
-        [ContextMenu("SaveGrid")]
-        private void SaveGrid()
-        {
-#if UNITY_EDITOR
-            EditorUtility.SetDirty(SerializedGrid);
-#endif
-        }
-
-        private void RenderTick()
-        {
-            _renderGrid.ElementwiseAction(DoRender);
-            void DoRender(TileRenderer rend) => rend.RenderTile();
-        }
-
-
-        private TileRenderer SpawnRenderer(DiscreteVector2 coord)
-        {
-            TileRenderer renderer = Instantiate(_tilePrefab, transform);
-            renderer.ManagedTile = _dataGrid.Get(coord);
-            renderer.Theme = Theme;
-            renderer.transform.localPosition = new Vector3(coord.X, coord.Y);
-            return renderer;
-        }
     }
 }
