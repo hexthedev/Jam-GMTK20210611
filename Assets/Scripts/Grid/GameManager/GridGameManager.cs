@@ -1,7 +1,11 @@
+using HexCS.Core;
+
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
+
+using static UnityEngine.InputSystem.InputAction;
 
 namespace GMTK2021
 {
@@ -17,8 +21,11 @@ namespace GMTK2021
 
         public UnityEvent _onGameWin;
 
+        public Camera cam;
 
         public bool isGameWon = false;
+
+        public Color[] bgColors;
 
         public void Start()
         {
@@ -48,6 +55,15 @@ namespace GMTK2021
             }
         }
 
+        public void SkipToNext(CallbackContext c)
+        {
+            if (c.performed)
+            {
+                levelIndex++;
+                Animator.SetTrigger("OUT");
+            }
+        }
+
         public void AnimIn()
         {
             Renderer.InputState = true;
@@ -60,6 +76,7 @@ namespace GMTK2021
 
             if (!isGameWon)
             {
+                cam.backgroundColor = bgColors.RandomElement();
                 Animator.SetTrigger("IN");
             }
         }

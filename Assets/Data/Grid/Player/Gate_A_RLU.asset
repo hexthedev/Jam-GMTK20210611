@@ -1,0 +1,32 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9609fb2f4c6b6cf45b74424ac5646bc4, type: 3}
+  m_Name: Gate_A_RLU
+  m_EditorClassIdentifier: 
+  IsSlideAnimated: 1
+  Offset: {x: 0, y: 0, z: 0}
+  Sprite: {fileID: -1478614004182643584, guid: fe838f1c8ae2d3144bf434d27063a8cf, type: 3}
+  Controller: {fileID: 0}
+  SpriteSwapAnimNames:
+  - NONE
+  - LEFT
+  - RIGHT
+  - UP
+  - DOWN
+  SpriteSwapSprites:
+  - {fileID: -1478614004182643584, guid: fe838f1c8ae2d3144bf434d27063a8cf, type: 3}
+  - {fileID: 3486585359595746728, guid: fe838f1c8ae2d3144bf434d27063a8cf, type: 3}
+  - {fileID: -4317923671361127839, guid: fe838f1c8ae2d3144bf434d27063a8cf, type: 3}
+  - {fileID: 5767578853029115365, guid: fe838f1c8ae2d3144bf434d27063a8cf, type: 3}
+  - {fileID: 2537505480408744149, guid: fe838f1c8ae2d3144bf434d27063a8cf, type: 3}
+  _inputAction: A
+  _directionLoop: 020000000400000001000000

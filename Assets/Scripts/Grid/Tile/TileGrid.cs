@@ -37,8 +37,9 @@ namespace GMTK2021
         /// <summary>
         /// Resolves an input by action name. Returns true if at least one thing moves
         /// </summary>
-        public bool ResolveInput(string input, out ObjectTransaction[] transactions)
+        public bool ResolveInput(string input, out ObjectTransaction[] transactions, out MovementReport rep)
         {
+            rep = null;
             transactions = null;
             if (input == "Undo")
             {
@@ -56,6 +57,8 @@ namespace GMTK2021
             MovementReport moveReport = new MovementReport();
             foreach (GridElement<Tile> el in inputReport.CanReceiveInput)
                 Get(el.Cooridnate).Object.ProvideReportAboutMovementCapabilities(inputDirection, moveReport);
+            moveReport.ActivatedDirs = inputReport.ActivatedDirections;
+            rep = moveReport;
 
             if (moveReport.CanMoveList.Count() == 0) return false;
 

@@ -12,6 +12,7 @@ namespace GMTK2021
         public List<GridElement<Tile>> PushedMove = new List<GridElement<Tile>>();
         public List<GridElement<Tile>> BlockedMove = new List<GridElement<Tile>>();
 
+        public List<EManhattanDirection> ActivatedDirs = new List<EManhattanDirection>();
         public IEnumerable<GridElement<Tile>> CanMoveList
         {
             get

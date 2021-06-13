@@ -5,6 +5,7 @@ using HexUN.Events;
 
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 
 #if UNITY_EDITOR
 using UnityEditor;
@@ -54,6 +55,9 @@ namespace GMTK2021
         public VoidReliableEvent _onAnimIn;
         public VoidReliableEvent _onAnimOut;
 
+        [Header("Ui")]
+        [SerializeField]
+        UiLastInput _linp;
 
         // Note: asusmes 1x1 prefabs
         private bool _inputState = false;
@@ -112,7 +116,9 @@ namespace GMTK2021
 #endif
         public void SaveGrid(SoGameGrid serializedGrid)
         {
+#if UNITY_EDITOR
             EditorUtility.SetDirty(serializedGrid);
+#endif
         }
 
 
@@ -260,9 +266,25 @@ namespace GMTK2021
 
             if (Context.performed)
             {
-                if (_dataGrid.ResolveInput(Context.action.name, out TileGrid.ObjectTransaction[] trans))
+                if (_dataGrid.ResolveInput(Context.action.name, out TileGrid.ObjectTransaction[] trans, out MovementReport rep))
                 {
                     InputState = false;
+
+                    if(Context.action.name != "Undo")
+                    {
+                        if(rep== null) 
+                        {
+                            _linp.SetLastInput(new EManhattanDirection[] { }, true);
+                        }
+                        else
+                        {
+                            _linp.SetLastInput(rep.ActivatedDirs.ToArray(), rep.CanMoveList.Count() == 0);
+                        }
+                    }
+                    else
+                    {
+                        _linp.SetLastInput(new EManhattanDirection[] { }, false);
+                    }
 
                     RenderTick();
                     StartCoroutine(PerformAnimations(trans));
