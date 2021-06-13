@@ -1,0 +1,31 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e6e9fe1497565784cb7e23be2d75684c, type: 3}
+  m_Name: Direction_Right2
+  m_EditorClassIdentifier: 
+  IsSlideAnimated: 1
+  Offset: {x: 0, y: 0, z: 0}
+  Sprite: {fileID: 2848349000821091630, guid: 184c0a67462b7f64ebae651c3f54bb45, type: 3}
+  Controller: {fileID: 0}
+  SpriteSwapAnimNames:
+  - OFF
+  - A
+  - B
+  - Y
+  - X
+  SpriteSwapSprites:
+  - {fileID: 2848349000821091630, guid: 184c0a67462b7f64ebae651c3f54bb45, type: 3}
+  - {fileID: -8488382477561196454, guid: 184c0a67462b7f64ebae651c3f54bb45, type: 3}
+  - {fileID: -2149167032889174755, guid: 184c0a67462b7f64ebae651c3f54bb45, type: 3}
+  - {fileID: 2271323664214982149, guid: 184c0a67462b7f64ebae651c3f54bb45, type: 3}
+  - {fileID: -2663180218650162454, guid: 184c0a67462b7f64ebae651c3f54bb45, type: 3}
+  direction: 2

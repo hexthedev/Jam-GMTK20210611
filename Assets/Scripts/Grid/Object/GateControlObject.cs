@@ -6,7 +6,7 @@ using UnityEngine;
 
 namespace GMTK2021
 {
-    [CreateAssetMenu(fileName = nameof(ControlObject), menuName = "GMTK/ControlObject")]
+    [CreateAssetMenu(fileName = nameof(GateControlObject), menuName = "GMTK/GateControlObject")]
     public class GateControlObject : SoObject
     {
         [Header("Input")]
@@ -17,7 +17,8 @@ namespace GMTK2021
         private EManhattanDirection _startDirection;
 
         bool _isStarted = false;
-        public EManhattanDirection _currentDir;
+
+        private EManhattanDirection _currentDir;
 
 
         public override bool IsPlayer => true;
@@ -49,14 +50,28 @@ namespace GMTK2021
                 return;
             }
 
-            TriggerAnimation(_currentDir.ToString());
+            t.Object.TriggerAnimation(InputAction);
+            TriggerAnimation("ON");
         }
 
         public override void ResolveInputRecieved(string input, InputReport report, GridElement<Tile> element)
         {
-            if (!_isStarted) _currentDir = _startDirection;
-            if (_inputAction != input) return;
+            if (!_isStarted)
+            {
+                _currentDir = _startDirection;
+                _isStarted = true;
+            }
 
+            switch (_currentDir)
+            {
+                case EManhattanDirection.DOWN: _currentDir = EManhattanDirection.LEFT; break;
+                case EManhattanDirection.LEFT: _currentDir = EManhattanDirection.UP; break;
+                case EManhattanDirection.UP: _currentDir = EManhattanDirection.RIGHT; break;
+                case EManhattanDirection.RIGHT: _currentDir = EManhattanDirection.DOWN; break;
+            }
+
+            if (_inputAction != input) return;
+            
             DiscreteVector2 activeDir = new DiscreteVector2
             (
                 _currentDir == EManhattanDirection.DOWN || _currentDir == EManhattanDirection.UP ? 0 : _currentDir == EManhattanDirection.LEFT ? -1 : 1,
@@ -83,6 +98,8 @@ namespace GMTK2021
 
         public override void ResolveMovementRecieved(DiscreteVector2 direction, MovementReport report, GridElement<Tile> element)
         {
+
+
             return;
         }
 
@@ -95,7 +112,11 @@ namespace GMTK2021
 
         public override bool ResolveIsActivating(GridElement<Tile> element)
         {
-            return false;
+            DiscreteVector2 idx = element.Cooridnate - UTEManhattanDirections.AsDiscreteVector2(_currentDir);
+
+            if (!element.Grid.IsInBounds(idx)) return false;
+            Tile t = element.Grid.Get(idx);
+            return t.Object == this;
         }
     }
 }

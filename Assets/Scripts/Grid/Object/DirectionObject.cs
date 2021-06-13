@@ -26,17 +26,20 @@ namespace GMTK2021
 
             element.Grid.GetManhattanNeighbours(element.Cooridnate)
                 .Where(c => c.Object != null && !string.IsNullOrEmpty(c.Object.InputAction))
-                .Do(d => isOneActive = true);
+                .Do(DoThing);
 
-            if (!isOneActive)
+
+            TriggerAnimation(isOneActive ? "ON" : "OFF");
+            
+            void DoThing(Tile t)
             {
-                TriggerAnimation("OFF");
+                if(t.Object.ResolveIsActivating(element)) isOneActive = true;
             }
         }
 
         public override void ResolveInputRecieved(string input, InputReport report, GridElement<Tile> element) { return; }
 
-        public override bool ResolveIsActivating(GridElement<Tile> element) => true;
+        public override bool ResolveIsActivating(GridElement<Tile> element) => false;
 
         public override void ResolveMovementRecieved(DiscreteVector2 direction, MovementReport report, GridElement<Tile> element)
         {
