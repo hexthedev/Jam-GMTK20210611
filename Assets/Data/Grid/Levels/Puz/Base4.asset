@@ -43,7 +43,7 @@ MonoBehaviour:
   - Floor: {fileID: 11400000, guid: 26be8ddef0c9fa94aa0dd6c004b8b64a, type: 2}
     Object: {fileID: 11400000, guid: 5bb0138aaf11d624094c233584a0ee08, type: 2}
   - Floor: {fileID: 11400000, guid: 26be8ddef0c9fa94aa0dd6c004b8b64a, type: 2}
-    Object: {fileID: 11400000, guid: eb71bd68c160cbe44ae316ccbcd44142, type: 2}
+    Object: {fileID: 11400000, guid: 63433a8a94bb89347999067bd29182d4, type: 2}
   - Floor: {fileID: 11400000, guid: 26be8ddef0c9fa94aa0dd6c004b8b64a, type: 2}
     Object: {fileID: 11400000, guid: eb699aa11b85db243b21e4430b22a41d, type: 2}
   - Floor: {fileID: 11400000, guid: 26be8ddef0c9fa94aa0dd6c004b8b64a, type: 2}

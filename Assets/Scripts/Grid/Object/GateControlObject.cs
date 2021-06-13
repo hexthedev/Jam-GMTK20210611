@@ -86,7 +86,7 @@ namespace GMTK2021
 
             if (!myGrid.IsInBounds(target))
             {
-                TriggerAnimation("OFF");
+                TriggerAnimation("NONE");
                 return;
             }
 
@@ -94,12 +94,12 @@ namespace GMTK2021
 
             if(t.Object == null || t.Object.InputDirection == EManhattanDirection.NONE)
             {
-                TriggerAnimation("OFF");
+                TriggerAnimation("NONE");
                 return;
             }
 
             t.Object.TriggerAnimation(InputAction);
-            TriggerAnimation("ON");
+            TriggerAnimation(_directionLoop[index].ToString());
         }
 
 
