@@ -164,6 +164,17 @@
                 },
                 {
                     "name": "",
+                    "id": "294377b0-7dfc-433e-b7c4-9488ac345fbb",
+                    "path": "<Gamepad>/rightTrigger",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Undo",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
                     "id": "3cf9f35a-3030-42fb-b25a-bba558a1606d",
                     "path": "<Keyboard>/n",
                     "interactions": "",
@@ -175,8 +186,30 @@
                 },
                 {
                     "name": "",
+                    "id": "9dde9da6-923e-4ba5-9d1a-1c7455db0baa",
+                    "path": "<Gamepad>/select",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "N",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
                     "id": "f1da4931-6aa8-45a2-baa0-612baba51391",
                     "path": "<Keyboard>/r",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Reload",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "bb078c73-8c71-46fd-8672-1c71bd09b495",
+                    "path": "<Gamepad>/leftTrigger",
                     "interactions": "",
                     "processors": "",
                     "groups": "",
