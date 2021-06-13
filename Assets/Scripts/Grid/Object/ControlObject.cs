@@ -41,6 +41,8 @@ namespace GMTK2021
                 .Do(d => report.ActivatedDirections.Add(d.Object.InputDirection));
         }
 
+        public override bool ResolveIsActivating(GridElement<Tile> element) => false;
+
         public override void ResolveMovementRecieved(DiscreteVector2 direction, MovementReport report, GridElement<Tile> element)
         {
             return;

@@ -22,6 +22,8 @@ namespace GMTK2021
         public override void ResolveInputRecieved(string input, InputReport report, GridElement<Tile> element)
             => report.CanReceiveInput.Add(element);
 
+        public override bool ResolveIsActivating(GridElement<Tile> element) => false;
+
         public override void ResolveMovementRecieved(DiscreteVector2 direction, MovementReport report, GridElement<Tile> element)
         {
             DiscreteVector2 targetIndex = element.Cooridnate + direction;

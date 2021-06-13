@@ -13,33 +13,73 @@ namespace GMTK2021
         [SerializeField]
         private string _inputAction;
 
+        [SerializeField]
+        private EManhattanDirection _startDirection;
+
+        bool _isStarted = false;
+        public EManhattanDirection _currentDir;
+
+
         public override bool IsPlayer => true;
 
         public override string InputAction => _inputAction;
 
         public override EManhattanDirection InputDirection => EManhattanDirection.NONE;
 
-        public override bool ReceivesMovement(GridElement<Tile> element) => false;
+        public override bool ReceivesMovement(GridElement<Tile> element) => true;
+
+
 
         public override void ResolveAnimEvents(GridElement<Tile> element)
         {
-            bool isOneActive = false;
+            DiscreteVector2 activeDir = UTEManhattanDirections.AsDiscreteVector2(_currentDir);
+            DiscreteVector2 target = element.Cooridnate + activeDir;
 
-            element.Grid.GetManhattanNeighbours(element.Cooridnate)
-                .Where(n => n.Object != null && n.Object.InputDirection != EManhattanDirection.NONE)
-                .Do(d => { d.Object.TriggerAnimation(_inputAction); isOneActive = true; });
+            if (!element.Grid.IsInBounds(target))
+            {
+                TriggerAnimation("OFF");
+                return;
+            }
 
-            TriggerAnimation( isOneActive ? "ON" : "OFF" );
+            Tile t = element.Grid.Get(element.Cooridnate + activeDir);
+
+            if(t.Object == null || t.Object.InputDirection == EManhattanDirection.NONE)
+            {
+                TriggerAnimation("OFF");
+                return;
+            }
+
+            TriggerAnimation(_currentDir.ToString());
         }
 
         public override void ResolveInputRecieved(string input, InputReport report, GridElement<Tile> element)
         {
+            if (!_isStarted) _currentDir = _startDirection;
             if (_inputAction != input) return;
 
-            element.Grid.GetManhattanNeighbours(element.Cooridnate)
-                .Where(n => n.Object != null && n.Object.InputDirection != EManhattanDirection.NONE)
-                .Do(d => report.ActivatedDirections.Add(d.Object.InputDirection));
+            DiscreteVector2 activeDir = new DiscreteVector2
+            (
+                _currentDir == EManhattanDirection.DOWN || _currentDir == EManhattanDirection.UP ? 0 : _currentDir == EManhattanDirection.LEFT ? -1 : 1,
+                _currentDir == EManhattanDirection.LEFT || _currentDir == EManhattanDirection.RIGHT ? 0 : _currentDir == EManhattanDirection.DOWN ? -1 : 1
+            );
+
+            DiscreteVector2 target = element.Cooridnate + activeDir;
+
+            if (!element.Grid.IsInBounds(target))
+            {
+                return;
+            }
+
+            Tile t = element.Grid.Get(element.Cooridnate + activeDir);
+
+            if (t.Object == null || t.Object.InputDirection == EManhattanDirection.NONE)
+            {
+                return;
+            }
+
+            report.ActivatedDirections.Add(t.Object.InputDirection);
         }
+        
 
         public override void ResolveMovementRecieved(DiscreteVector2 direction, MovementReport report, GridElement<Tile> element)
         {
@@ -51,6 +91,11 @@ namespace GMTK2021
             bool res = IsPushable_IfPushedToEmpty(direction, report, element);
             if (res) report.PushedMove.Add(element);
             return res;
+        }
+
+        public override bool ResolveIsActivating(GridElement<Tile> element)
+        {
+            return false;
         }
     }
 }

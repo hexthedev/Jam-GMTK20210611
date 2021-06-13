@@ -29,19 +29,7 @@ namespace GMTK2021
         public List<Sprite> SpriteSwapSprites;
 
 
-
-
         public event Action<string> OnAnimationTriggered;
-
-        public void TriggerAnimation(string anim) => OnAnimationTriggered?.Invoke(anim);
-
-
-
-
-
-
-
-
 
 
         public abstract bool IsPlayer { get; }
@@ -50,25 +38,25 @@ namespace GMTK2021
          
         public abstract EManhattanDirection InputDirection { get; }
 
-        /// <summary>
-        /// Based on the grid, can this object recieve movement
-        /// </summary>
-        public abstract bool ReceivesMovement(GridElement<Tile> element);
+  
 
-
+        // Are any anim events required
         public abstract void ResolveAnimEvents(GridElement<Tile> element);
 
-
+        // try to supply input
         public abstract void ResolveInputRecieved(string input, InputReport report, GridElement<Tile> element);
+        
+        // Does this recieve movement
+        public abstract bool ReceivesMovement(GridElement<Tile> element);
 
+        // try to move
         public abstract void ResolveMovementRecieved(DiscreteVector2 direction, MovementReport report, GridElement<Tile> element);
 
-        /// <summary>
-        /// True if pushed
-        /// </summary>
+        // can I be pushed
         public abstract bool ResolvePushAttempt(DiscreteVector2 direction, MovementReport report, GridElement<Tile> element);
 
-
+        // Am I activting you
+        public abstract bool ResolveIsActivating(GridElement<Tile> element);
 
 
         protected bool IsPushable_IfPushedToEmpty(DiscreteVector2 direction, MovementReport report, GridElement<Tile> element)
@@ -82,5 +70,7 @@ namespace GMTK2021
             return t.Object.ResolvePushAttempt(direction, report, element.Grid.AsElement(target));
         }
 
+
+        public void TriggerAnimation(string anim) => OnAnimationTriggered?.Invoke(anim);
     }
 }

@@ -36,6 +36,8 @@ namespace GMTK2021
 
         public override void ResolveInputRecieved(string input, InputReport report, GridElement<Tile> element) { return; }
 
+        public override bool ResolveIsActivating(GridElement<Tile> element) => true;
+
         public override void ResolveMovementRecieved(DiscreteVector2 direction, MovementReport report, GridElement<Tile> element)
         {
             return;
