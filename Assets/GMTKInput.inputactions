@@ -165,7 +165,7 @@
                 {
                     "name": "",
                     "id": "294377b0-7dfc-433e-b7c4-9488ac345fbb",
-                    "path": "<Gamepad>/rightTrigger",
+                    "path": "<XInputController>/rightShoulder",
                     "interactions": "",
                     "processors": "",
                     "groups": "",
@@ -209,7 +209,7 @@
                 {
                     "name": "",
                     "id": "bb078c73-8c71-46fd-8672-1c71bd09b495",
-                    "path": "<Gamepad>/leftTrigger",
+                    "path": "<XInputController>/leftShoulder",
                     "interactions": "",
                     "processors": "",
                     "groups": "",
