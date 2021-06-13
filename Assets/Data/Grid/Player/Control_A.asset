@@ -12,4 +12,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8fff4526ce91f1b4388d4ca106533e69, type: 3}
   m_Name: Control_A
   m_EditorClassIdentifier: 
+  Sprite: {fileID: 3501455699521706480, guid: 184c0a67462b7f64ebae651c3f54bb45, type: 3}
   _inputAction: A

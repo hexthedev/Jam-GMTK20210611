@@ -8,6 +8,13 @@ namespace GMTK2021
 {
     public abstract class SoObject : ScriptableObject
     {
+        [Header("Art")]
+        [SerializeField]
+        public Sprite Sprite;
+
+        [SerializeField]
+        public RuntimeAnimatorController Controller;
+
         public abstract bool IsPlayer { get; }
 
         public abstract string InputAction { get; }

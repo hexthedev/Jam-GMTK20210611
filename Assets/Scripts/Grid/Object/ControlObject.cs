@@ -9,6 +9,7 @@ namespace GMTK2021
     [CreateAssetMenu(fileName = nameof(ControlObject), menuName = "GMTK/ControlObject")]
     public class ControlObject : SoObject
     {
+        [Header("Input")]
         [SerializeField]
         private string _inputAction;
 

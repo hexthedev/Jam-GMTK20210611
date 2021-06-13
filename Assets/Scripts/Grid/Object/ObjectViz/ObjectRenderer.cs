@@ -6,54 +6,46 @@ namespace GMTK2021
 {
     public class ObjectRenderer : MonoBehaviour
     {
-        public bool smallQuadMode = true;
-
-        [SerializeField]
-        private MeshRenderer rend;
-
-        [SerializeField]
-        private SmallQuad smallQuad;
-
-        [SerializeField]
-        private MeshRenderer smallQuadRenderer;
-
-        public Material Material
+        private SoObject _object;
+        public SoObject Object
         {
-            get => rend.material;
-            set => rend.material = value;
-        }
-
-        public void SetMode(bool smallQuad)
-        {
-            rend.enabled = !smallQuad;
-            this.smallQuad.enabled = smallQuad;
-        }
-
-        public void SetArt(Material mat)
-        {
-            if (smallQuadMode)
+            get => _object;
+            set
             {
-                smallQuadRenderer.material = mat;
+                if(_object != value)
+                {
+                    _object = value;
+                    _renderer.sprite = _object.Sprite;
+                    _animator.runtimeAnimatorController = _object.Controller;
+                }
             }
         }
 
+        [Header("Small")]
+
+        [SerializeField]
+        private SpriteRenderer _renderer;
+
+        [SerializeField]
+        private Animator _animator;
+
+        [SerializeField]
+        private SmallQuad _quad;
+
         public void PrepareSlide(Vector2 direction)
         {
-            if (smallQuadMode) smallQuad.PrepareSlide(direction);
+            _quad.PrepareSlide(direction);
         }
 
         public void Slide(float val)
         {
-            if (smallQuadMode) smallQuad.Slide(val);
+            _quad.Slide(val);
         }
 
         public void StopSlide()
         {
-            if (smallQuadMode)
-            {
-                transform.localPosition = transform.localPosition + smallQuad.transform.localPosition;
-                smallQuad.StopSlide();
-            }
+            transform.localPosition = transform.localPosition + _quad.transform.localPosition;
+            _quad.StopSlide();
         }
     }
 }

@@ -34,7 +34,12 @@ namespace GMTK2021
         ObjectRenderer _objectPrefab;
 
         [SerializeField]
-        private Transform parent;
+        private Transform _fullParent;
+        [SerializeField]
+        private Transform _tileParent;
+        [SerializeField]
+        private Transform _objectParent;
+
 
         [Header("Initalization")]
         public bool autoInitalize = false;
@@ -54,8 +59,8 @@ namespace GMTK2021
         private bool _inputState = false;
         private DiscreteVector2 _size;
         private TileGrid _dataGrid;
-        private Grid<TileRenderer> _renderGrid;
-        private Dictionary<DiscreteVector2, ObjectRenderer> _objectRends = new Dictionary<DiscreteVector2, ObjectRenderer>();
+        private Grid<TileRenderer> _tileRenderGrid;
+        private Dictionary<DiscreteVector2, ObjectRenderer> _objectRenderGrid = new Dictionary<DiscreteVector2, ObjectRenderer>();
 
         public bool InputState
         {
@@ -110,53 +115,50 @@ namespace GMTK2021
             EditorUtility.SetDirty(serializedGrid);
         }
 
+
         public void InitGrid(SoGameGrid serializedGrid)
         {
             if (this == null) return;
-            UTGameObject.DestroyAllChildren_EditorSafe(parent.gameObject);
+            ClearParents();
 
             _size = new DiscreteVector2(serializedGrid.Width, serializedGrid.Height);
 
             _dataGrid = TileGrid.ConstructFrom(_size, Application.isPlaying ? serializedGrid.CopyTiles() : serializedGrid.TileGrid);
+            _tileRenderGrid = new Grid<TileRenderer>(_size, SpawnTileRenderer);
 
-            _renderGrid = new Grid<TileRenderer>(_size, SpawnRenderer);
-
-            _objectRends.Clear();
-            _renderGrid.ElementwiseAction(
-                (TileRenderer tr, GridElement<TileRenderer> i) =>
+            _objectRenderGrid.Clear();
+            _dataGrid.ElementwiseAction(
+                (Tile t, GridElement<Tile> i) =>
                 {
-                    ObjectRenderer obr = tr.MakeObjectRenderer(_objectPrefab);
+                    if (t.Object == null) return;
+
+                    ObjectRenderer obr = Instantiate(_objectPrefab, _objectParent);
 
                     if (obr != null)
                     {
-                        _objectRends.Add(i.Cooridnate, obr);
-                        obr.SetMode(true);
+                        obr.Object = t.Object;
+                        _objectRenderGrid.Add(i.Cooridnate, obr);
+                        obr.transform.localPosition = new UnityEngine.Vector3(i.Cooridnate.X, i.Cooridnate.Y, obr.transform.localPosition.z);
                     }
                 }
             );
 
-            foreach (KeyValuePair<DiscreteVector2, ObjectRenderer> or in _objectRends)
-            {
-                or.Value.transform.SetParent(parent, true);
-                or.Value.transform.localPosition = new UnityEngine.Vector3(or.Key.X, or.Key.Y, or.Value.transform.localPosition.z);
-            }
-
-            parent.transform.localPosition = new Vector3(-_dataGrid.Size.X / 2 + 0.5f, -_dataGrid.Size.Y / 2 + 0.5f, 0);
+            _fullParent.transform.localPosition = new Vector3(-_dataGrid.Size.X / 2 + 0.5f, -_dataGrid.Size.Y / 2 + 0.5f, 0);
             RenderTick();
         }
 
         public void Clear()
         {
-            UTGameObject.DestroyAllChildren(parent.gameObject);
+            ClearParents();
 
             _dataGrid = null;
-            _renderGrid = null;
-            _objectRends.Clear();
+            _tileRenderGrid = null;
+            _objectRenderGrid.Clear();
         }
 
-        private TileRenderer SpawnRenderer(DiscreteVector2 coord)
+        private TileRenderer SpawnTileRenderer(DiscreteVector2 coord)
         {
-            TileRenderer renderer = Instantiate(_tilePrefab, parent);
+            TileRenderer renderer = Instantiate(_tilePrefab, _tileParent);
             renderer.ManagedTile = _dataGrid.Get(coord);
             renderer.Theme = Theme;
             renderer.transform.localPosition = new Vector3(coord.X, coord.Y);
@@ -175,12 +177,12 @@ namespace GMTK2021
 
             foreach (TileGrid.ObjectTransaction obt in trans)
             {
-                ObjectRenderer rend = _objectRends[obt.LastIndex];
+                ObjectRenderer rend = _objectRenderGrid[obt.LastIndex];
 
                 DiscreteVector2 direction = obt.NextIndex - obt.LastIndex;
                 rend.PrepareSlide(new UnityEngine.Vector2(direction.X, direction.Y));
                 rends.Add(rend);
-                _objectRends.Remove(obt.LastIndex);
+                _objectRenderGrid.Remove(obt.LastIndex);
                 targ.Add(obt.NextIndex);
             }
 
@@ -201,7 +203,7 @@ namespace GMTK2021
 
             for (int i = 0; i < rends.Count; i++)
             {
-                _objectRends.Add(targ[i], rends[i]);
+                _objectRenderGrid.Add(targ[i], rends[i]);
             }
 
             PerformStatusReport();
@@ -211,7 +213,7 @@ namespace GMTK2021
 
         private void RenderTick()
         {
-            _renderGrid.ElementwiseAction(DoRender);
+            _tileRenderGrid.ElementwiseAction(DoRender);
             void DoRender(TileRenderer rend) => rend.RenderTile();
         }
         #endregion
@@ -253,6 +255,12 @@ namespace GMTK2021
                     StartCoroutine(PerformAnimations(trans));
                 }
             }
+        }
+
+        private void ClearParents()
+        {
+            UTGameObject.DestroyAllChildren_EditorSafe(_tileParent.gameObject);
+            UTGameObject.DestroyAllChildren_EditorSafe(_objectParent.gameObject);
         }
 
         private void PerformStatusReport()

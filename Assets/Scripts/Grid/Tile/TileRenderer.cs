@@ -9,11 +9,10 @@ namespace GMTK2021
         public Tile ManagedTile;
 
         [SerializeField]
-        private MeshRenderer _backgroundRenderer;
+        private SpriteRenderer _tileRenderer;
 
         [SerializeField]
-        private MeshRenderer _foregroundRenderer;
-
+        private Animator _animator;
 
         public void RenderTile()
         {
@@ -23,8 +22,6 @@ namespace GMTK2021
                 return;
             }
 
-            _backgroundRenderer.material = Theme.Background;
-
             RenderFloor(ManagedTile.Floor);
         }
 
@@ -32,30 +29,17 @@ namespace GMTK2021
         {
             if(props == null)
             {
-                _foregroundRenderer.enabled = false;
+                _tileRenderer.enabled = false;
                 return;
             }
 
-            _foregroundRenderer.enabled = true;
-            _foregroundRenderer.material = Theme.GetFloorMat(props);
-        }
-
-        public ObjectRenderer MakeObjectRenderer(ObjectRenderer prefab)
-        {
-            if(ManagedTile.Object != null)
-            {
-                ObjectRenderer rend = Instantiate(prefab);
-                rend.SetArt(Theme.GetForObject(ManagedTile.Object));
-                return rend;
-            }
-
-            return null;
+            _tileRenderer.sprite = props.Sprite;
+            _animator.runtimeAnimatorController = props.AnimatorController;
         }
 
         private void DisableAllRenderers()
         {
-            _backgroundRenderer.enabled = false;
-            _foregroundRenderer.enabled = false;
+            _tileRenderer.enabled = false;
         }
     }
 }

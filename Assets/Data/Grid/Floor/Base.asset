@@ -12,5 +12,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9d557f86f3817184288b9d8562bdc417, type: 3}
   m_Name: Base
   m_EditorClassIdentifier: 
-  Color: {r: 1, g: 0.3671419, b: 0, a: 1}
-  Blocks: 00000000
+  Type: 0
+  BlockUp: 0
+  BlockRight: 0
+  BlockDown: 0
+  BlockLeft: 0
+  PlayerDies: 0
+  PlayerWins: 0
+  Sprite: {fileID: -6815072695991787173, guid: 45d75ff006fe3fe4e81346c888c00448, type: 3}

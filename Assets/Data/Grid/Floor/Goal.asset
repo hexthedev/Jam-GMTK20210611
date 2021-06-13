@@ -19,3 +19,5 @@ MonoBehaviour:
   BlockLeft: 0
   PlayerDies: 0
   PlayerWins: 1
+  Sprite: {fileID: 8075267785468852444, guid: a107c609149d1ff47843faf61e21c43a, type: 3}
+  AnimatorController: {fileID: 9100000, guid: 70d97b3f43742af4699408ed45d328c6, type: 2}

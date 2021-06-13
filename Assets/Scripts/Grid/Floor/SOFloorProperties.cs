@@ -16,5 +16,8 @@ namespace GMTK2021
 
         public bool PlayerDies = false;
         public bool PlayerWins = false;
+
+        public Sprite Sprite;
+        public RuntimeAnimatorController AnimatorController;
     }
 }
