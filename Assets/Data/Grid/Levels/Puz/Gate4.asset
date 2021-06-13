@@ -13,6 +13,7 @@ MonoBehaviour:
   m_Name: Gate4
   m_EditorClassIdentifier: 
   name: Pop-Culture Fanatisism Eliminator
+  bgprefab: {fileID: 4384860208451211730, guid: e56460a8840e49e4fa520eee53c2087e, type: 3}
   Width: 5
   Height: 5
   _defaultTile:

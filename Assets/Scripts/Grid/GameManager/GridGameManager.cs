@@ -14,6 +14,7 @@ namespace GMTK2021
 {
     public class GridGameManager : MonoBehaviour
     {
+
         public SoGameGrid[] Levels;
 
         public int levelIndex = 0;
@@ -29,8 +30,6 @@ namespace GMTK2021
         public bool isGameWon = false;
 
         public Color[] bgColors;
-
-        public TMP_Text LevelIndicator;
 
         public string[] Verbs;
 
@@ -51,10 +50,8 @@ namespace GMTK2021
             else
             {
                 Renderer.Clear();
-                Renderer.InitGrid(Levels[levelIndex]);
+                Renderer.InitGrid(Levels[levelIndex], $"{Verbs.RandomElement()} {Levels[levelIndex].name}");
             }
-
-            LevelIndicator.text = $"{Verbs.RandomElement()} {Levels[levelIndex].name}";
         }
 
         public void HandleGameStatus(GamestateReport rep)

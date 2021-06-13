@@ -13,6 +13,7 @@ MonoBehaviour:
   m_Name: Gate5
   m_EditorClassIdentifier: 
   name: Fuzzy Feeling Containment Core
+  bgprefab: {fileID: 4384860208451211730, guid: 7c42badf34fb5ce4eb46eb29b353c831, type: 3}
   Width: 4
   Height: 4
   _defaultTile:

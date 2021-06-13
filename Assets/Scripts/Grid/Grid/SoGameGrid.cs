@@ -10,6 +10,7 @@ namespace GMTK2021
     public class SoGameGrid : ScriptableObject
     {
         public string name;
+        public GameObject bgprefab;
 
         public int Width;
         public int Height;

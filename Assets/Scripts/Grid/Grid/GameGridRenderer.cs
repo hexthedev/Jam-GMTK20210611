@@ -68,6 +68,8 @@ namespace GMTK2021
         private Grid<TileRenderer> _tileRenderGrid;
         private Dictionary<DiscreteVector2, ObjectRenderer> _objectRenderGrid = new Dictionary<DiscreteVector2, ObjectRenderer>();
 
+        public GameObject bgParent;
+
         public bool InputState
         {
             get => _inputState;
@@ -124,7 +126,7 @@ namespace GMTK2021
         }
 
 
-        public void InitGrid(SoGameGrid serializedGrid)
+        public void InitGrid(SoGameGrid serializedGrid, string name = null)
         {
             SerializedGrid = serializedGrid;
 
@@ -155,6 +157,11 @@ namespace GMTK2021
             );
 
             _fullParent.transform.localPosition = new Vector3(-_dataGrid.Size.X / 2 + 0.5f, -_dataGrid.Size.Y / 2 + 0.5f, 0);
+
+            UTGameObject.DestroyAllChildren_EditorSafe(bgParent);
+            GameObject p = Instantiate(serializedGrid.bgprefab, bgParent.transform);
+            p.GetComponent<UiLevelName>().SetLevelName(name);
+
             RenderTick();
         }
 
