@@ -59,6 +59,8 @@ namespace GMTK2021
         [SerializeField]
         UiLastInput _linp;
 
+        public AudioSource audioSource;
+
         // Note: asusmes 1x1 prefabs
         private bool _inputState = false;
         private DiscreteVector2 _size;
@@ -284,7 +286,7 @@ namespace GMTK2021
                     {
                         if(rep== null) 
                         {
-                            _linp.SetLastInput(new EManhattanDirection[] { }, true);
+                           _linp.SetLastInput(new EManhattanDirection[] { }, true);
                         }
                         else
                         {
@@ -294,6 +296,11 @@ namespace GMTK2021
                     else
                     {
                         _linp.SetLastInput(new EManhattanDirection[] { }, false);
+                    }
+
+                    if(rep != null)
+                    {
+                        if (rep.PushedMove.Count > 0) audioSource.Play();
                     }
 
                     RenderTick();

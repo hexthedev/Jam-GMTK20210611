@@ -13,8 +13,8 @@ namespace GMTK2021
 
         public void HandleGameState(GamestateReport rep)
         {
-            UiVictory.IsOver = rep.isPlayerDead || rep.isPlayerOnGoal;
-            UiVictory.IsWon = rep.isPlayerOnGoal;
+            //UiVictory.IsOver = rep.isPlayerDead || rep.isPlayerOnGoal;
+            //UiVictory.IsWon = rep.isPlayerOnGoal;
         }
 
         public void HandleInputState(bool state)

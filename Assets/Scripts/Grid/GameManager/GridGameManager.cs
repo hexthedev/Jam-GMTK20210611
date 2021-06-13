@@ -34,6 +34,8 @@ namespace GMTK2021
 
         public string[] Verbs;
 
+        public AudioSource audioSource;
+
         public void Start()
         {
             RenderNext();
@@ -59,6 +61,7 @@ namespace GMTK2021
         {
             if (rep.isPlayerOnGoal)
             {
+                audioSource.Play();
                 levelIndex++;
                 Animator.SetTrigger("OUT");
             }
