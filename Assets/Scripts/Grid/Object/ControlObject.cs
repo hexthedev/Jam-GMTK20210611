@@ -21,11 +21,16 @@ namespace GMTK2021
 
         public override bool ReceivesMovement(GridElement<Tile> element) => false;
 
+        public override void ResolveAnimEvents(GridElement<Tile> element)
+        {
+            bool isOneActive = false;
 
+            element.Grid.GetManhattanNeighbours(element.Cooridnate)
+                .Where(n => n.Object != null && n.Object.InputDirection != EManhattanDirection.NONE)
+                .Do(d => { d.Object.TriggerAnimation(_inputAction); isOneActive = true; });
 
-
-
-
+            TriggerAnimation( isOneActive ? "ON" : "OFF" );
+        }
 
         public override void ResolveInputRecieved(string input, InputReport report, GridElement<Tile> element)
         {

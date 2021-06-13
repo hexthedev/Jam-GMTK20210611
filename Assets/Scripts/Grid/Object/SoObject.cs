@@ -1,5 +1,6 @@
 using HexCS.Core;
 
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -10,10 +11,38 @@ namespace GMTK2021
     {
         [Header("Art")]
         [SerializeField]
+        public bool IsSlideAnimated = true;
+
+        [SerializeField]
+        public Vector3 Offset;
+
+        [SerializeField]
         public Sprite Sprite;
 
         [SerializeField]
         public RuntimeAnimatorController Controller;
+
+        [SerializeField]
+        public List<string> SpriteSwapAnimNames;
+
+        [SerializeField]
+        public List<Sprite> SpriteSwapSprites;
+
+
+
+
+        public event Action<string> OnAnimationTriggered;
+
+        public void TriggerAnimation(string anim) => OnAnimationTriggered?.Invoke(anim);
+
+
+
+
+
+
+
+
+
 
         public abstract bool IsPlayer { get; }
 
@@ -27,7 +56,7 @@ namespace GMTK2021
         public abstract bool ReceivesMovement(GridElement<Tile> element);
 
 
-
+        public abstract void ResolveAnimEvents(GridElement<Tile> element);
 
 
         public abstract void ResolveInputRecieved(string input, InputReport report, GridElement<Tile> element);

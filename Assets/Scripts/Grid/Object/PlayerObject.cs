@@ -15,7 +15,9 @@ namespace GMTK2021
 
         public override bool ReceivesMovement(GridElement<Tile> element) => true;
 
-
+        public override void ResolveAnimEvents(GridElement<Tile> element)
+        {
+        }
 
         public override void ResolveInputRecieved(string input, InputReport report, GridElement<Tile> element)
             => report.CanReceiveInput.Add(element);

@@ -4,17 +4,17 @@ namespace GMTK2021
 {
     public class SmallQuad : MonoBehaviour
     {
-        public Vector2 Target;
+        public Vector3 Target;
 
         public void Slide(float val)
         {
-            Vector2 pos = Vector2.Lerp(Vector2.zero, Target, val);
-            transform.localPosition = new Vector3(pos.x, pos.y, transform.localPosition.z);
+            Vector3 pos = Vector3.Lerp(Vector3.zero, Target, val);
+            transform.localPosition = pos;
         }
 
-        public void PrepareSlide(Vector2 direction)
+        public void PrepareSlide(Vector2 offset, Vector2 direction)
         {
-            Target = Vector2.zero + direction;
+            Target = direction;
         }
 
         public void StopSlide()

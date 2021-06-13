@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 5863679481772816541}
   - component: {fileID: 7814157713797064179}
   - component: {fileID: 3339775851306565142}
+  - component: {fileID: 5287005885059122212}
   m_Layer: 0
   m_Name: SmallQuad
   m_TagString: Untagged
@@ -45,7 +46,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 549350b17d5499b42a47b22bdab9a590, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Target: {x: 0, y: 0}
+  Target: {x: 0, y: 0, z: 0}
 --- !u!212 &7814157713797064179
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -116,6 +117,19 @@ Animator:
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorControllerStateOnDisable: 0
+--- !u!114 &5287005885059122212
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 990018883138396022}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bd49eec9032cca9449701413c9328ba2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _rend: {fileID: 6145154461020019209}
 --- !u!1 &6145154461020019214
 GameObject:
   m_ObjectHideFlags: 0

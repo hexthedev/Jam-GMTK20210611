@@ -1,5 +1,7 @@
 using HexCS.Core;
 
+using System.Linq;
+
 using UnityEngine;
 
 namespace GMTK2021
@@ -17,6 +19,20 @@ namespace GMTK2021
         public override EManhattanDirection InputDirection => direction;
 
         public override bool ReceivesMovement(GridElement<Tile> element) => false;
+
+        public override void ResolveAnimEvents(GridElement<Tile> element)
+        {
+            bool isOneActive = false;
+
+            element.Grid.GetManhattanNeighbours(element.Cooridnate)
+                .Where(c => c.Object != null && !string.IsNullOrEmpty(c.Object.InputAction))
+                .Do(d => isOneActive = true);
+
+            if (!isOneActive)
+            {
+                TriggerAnimation("OFF");
+            }
+        }
 
         public override void ResolveInputRecieved(string input, InputReport report, GridElement<Tile> element) { return; }
 

@@ -22,7 +22,7 @@ namespace GMTK2021
     [ExecuteAlways]
     public class GameGridRenderer : MonoBehaviour
     {
-        private const float cSlideSpeed = 0.25f;
+        private const float cSlideSpeed = 1;
 
         [Header("Visual Options")]
         public SoTileTheme Theme;
@@ -138,7 +138,7 @@ namespace GMTK2021
                     {
                         obr.Object = t.Object;
                         _objectRenderGrid.Add(i.Cooridnate, obr);
-                        obr.transform.localPosition = new UnityEngine.Vector3(i.Cooridnate.X, i.Cooridnate.Y, obr.transform.localPosition.z);
+                        obr.transform.localPosition = new UnityEngine.Vector3(i.Cooridnate.X, i.Cooridnate.Y, obr.transform.localPosition.z) + t.Object.Offset;
                     }
                 }
             );
@@ -177,6 +177,13 @@ namespace GMTK2021
 
             foreach (TileGrid.ObjectTransaction obt in trans)
             {
+                DiscreteVector2 dir = obt.NextIndex - obt.LastIndex;
+
+                if( dir == DiscreteVector2.Down) obt.TransactionObject.TriggerAnimation("Move_Down");
+                if (dir == DiscreteVector2.Left) obt.TransactionObject.TriggerAnimation("Move_Left");
+                if (dir == DiscreteVector2.Right) obt.TransactionObject.TriggerAnimation("Move_Right");
+                if (dir == DiscreteVector2.Up) obt.TransactionObject.TriggerAnimation("Move_Up");
+
                 ObjectRenderer rend = _objectRenderGrid[obt.LastIndex];
 
                 DiscreteVector2 direction = obt.NextIndex - obt.LastIndex;
@@ -213,6 +220,12 @@ namespace GMTK2021
 
         private void RenderTick()
         {
+            _dataGrid.ElementwiseAction(DoAnimUpdate);
+            void DoAnimUpdate(Tile t, GridElement<Tile> ge)
+            {
+                if (t.Object != null) t.Object.ResolveAnimEvents(ge);
+            }
+
             _tileRenderGrid.ElementwiseAction(DoRender);
             void DoRender(TileRenderer rend) => rend.RenderTile();
         }

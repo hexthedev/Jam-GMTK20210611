@@ -12,5 +12,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1545307db3f5da44f8deefeeb94d904e, type: 3}
   m_Name: Player
   m_EditorClassIdentifier: 
+  IsSlideAnimated: 0
+  Offset: {x: 0.5, y: 0.5, z: 0}
   Sprite: {fileID: 5153468356897553830, guid: bc829009b22878f418a4e87b3f9a2b10, type: 3}
   Controller: {fileID: 9100000, guid: 2b47df0eb2fc0d547a76773937edab24, type: 2}
+  SpriteSwapAnimNames: []
+  SpriteSwapSprites: []

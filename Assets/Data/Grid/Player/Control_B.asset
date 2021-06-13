@@ -12,6 +12,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8fff4526ce91f1b4388d4ca106533e69, type: 3}
   m_Name: Control_B
   m_EditorClassIdentifier: 
+  Offset: {x: 0, y: 0, z: 0}
   Sprite: {fileID: 5095877353274477729, guid: 184c0a67462b7f64ebae651c3f54bb45, type: 3}
   Controller: {fileID: 0}
+  SpriteSwapAnimNames:
+  - ON
+  - OFF
+  SpriteSwapSprites:
+  - {fileID: 3650241386275054438, guid: 184c0a67462b7f64ebae651c3f54bb45, type: 3}
+  - {fileID: 5095877353274477729, guid: 184c0a67462b7f64ebae651c3f54bb45, type: 3}
   _inputAction: B

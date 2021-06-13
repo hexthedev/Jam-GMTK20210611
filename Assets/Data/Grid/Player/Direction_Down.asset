@@ -12,6 +12,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e6e9fe1497565784cb7e23be2d75684c, type: 3}
   m_Name: Direction_Down
   m_EditorClassIdentifier: 
+  Offset: {x: 0, y: 0, z: 0}
   Sprite: {fileID: 8542018450146875887, guid: 184c0a67462b7f64ebae651c3f54bb45, type: 3}
   Controller: {fileID: 0}
+  SpriteSwapAnimNames:
+  - OFF
+  - A
+  - B
+  - Y
+  - X
+  SpriteSwapSprites:
+  - {fileID: 8542018450146875887, guid: 184c0a67462b7f64ebae651c3f54bb45, type: 3}
+  - {fileID: -3175440281964016596, guid: 184c0a67462b7f64ebae651c3f54bb45, type: 3}
+  - {fileID: -587298455507908941, guid: 184c0a67462b7f64ebae651c3f54bb45, type: 3}
+  - {fileID: -3163289483304529263, guid: 184c0a67462b7f64ebae651c3f54bb45, type: 3}
+  - {fileID: 1543739037643574406, guid: 184c0a67462b7f64ebae651c3f54bb45, type: 3}
   direction: 3
