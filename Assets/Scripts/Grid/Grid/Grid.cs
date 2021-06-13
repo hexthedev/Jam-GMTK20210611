@@ -12,7 +12,7 @@ namespace GMTK2021
     /// </summary>
     public class Grid<T>
     {
-        private Func<DiscreteVector2, T> _defaulElementFactory;
+        private Func<DiscreteVector2, Grid<T>, T> _defaulElementFactory;
 
         /// <summary>
         /// Flat array of all elements
@@ -27,11 +27,11 @@ namespace GMTK2021
         /// <summary>
         /// Constructor
         /// </summary>
-        public Grid(DiscreteVector2 size, Func<DiscreteVector2, T> defaultElementFactory)
+        public Grid(DiscreteVector2 size, Func<DiscreteVector2, Grid<T>, T> defaultElementFactory)
         {
             Size = size;
             _defaulElementFactory = defaultElementFactory;
-            Array = UTArray.ConstructArray(Size.Combinations, (i) => _defaulElementFactory(GetSplitIndex(i)));
+            Array = UTArray.ConstructArray(Size.Combinations, (i) => _defaulElementFactory(GetSplitIndex(i), this));
         }
 
         /// <summary>

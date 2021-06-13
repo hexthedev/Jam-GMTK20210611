@@ -18,13 +18,36 @@ namespace GMTK2021
 
         public override EManhattanDirection InputDirection => direction;
 
-        public override bool ReceivesMovement(GridElement<Tile> element) => false;
 
-        public override void ResolveAnimEvents(GridElement<Tile> element)
+
+
+
+
+        public override SoObject Copy()
+        {
+            DirectionObject po = CreateInstance<DirectionObject>();
+            PopulateWithCopy(po);
+            po.direction = direction;
+            return po;
+        }
+
+        public override bool CanObjectBePushedAndUpdateReport(DiscreteVector2 direction, MovementReport report)
+        {
+            bool res = IsPushable_IfPushedToEmpty(direction, report);
+            if (res) report.PushedMove.Add(myGrid.AsElement(myPosition));
+            return res;
+        }
+
+
+
+
+
+
+        public override void FireReleventAnimationEvents()
         {
             bool isOneActive = false;
 
-            element.Grid.GetManhattanNeighbours(element.Cooridnate)
+            myGrid.GetManhattanNeighbours(myPosition)
                 .Where(c => c.Object != null && !string.IsNullOrEmpty(c.Object.InputAction))
                 .Do(DoThing);
 
@@ -33,24 +56,12 @@ namespace GMTK2021
             
             void DoThing(Tile t)
             {
-                if(t.Object.ResolveIsActivating(element)) isOneActive = true;
+                if(t.Object.AreYouActivatingMe(myGrid.AsElement(myPosition))) isOneActive = true;
             }
         }
 
-        public override void ResolveInputRecieved(string input, InputReport report, GridElement<Tile> element) { return; }
+        public override bool AreYouActivatingMe(GridElement<Tile> element) => false;
 
-        public override bool ResolveIsActivating(GridElement<Tile> element) => false;
 
-        public override void ResolveMovementRecieved(DiscreteVector2 direction, MovementReport report, GridElement<Tile> element)
-        {
-            return;
-        }
-
-        public override bool ResolvePushAttempt(DiscreteVector2 direction, MovementReport report, GridElement<Tile> element)
-        {
-            bool res = IsPushable_IfPushedToEmpty(direction, report, element);
-            if (res) report.PushedMove.Add(element);
-            return res;
-        }
     }
 }

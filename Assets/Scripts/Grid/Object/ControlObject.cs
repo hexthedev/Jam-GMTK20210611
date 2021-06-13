@@ -19,39 +19,49 @@ namespace GMTK2021
 
         public override EManhattanDirection InputDirection => EManhattanDirection.NONE;
 
-        public override bool ReceivesMovement(GridElement<Tile> element) => false;
 
-        public override void ResolveAnimEvents(GridElement<Tile> element)
+
+
+
+        public override SoObject Copy()
+        {
+            ControlObject po = CreateInstance<ControlObject>();
+            po._inputAction = _inputAction;
+            PopulateWithCopy(po);
+            return po;
+        }
+
+        public override void ProvideReportAboutInputRole(string input, InputReport report)
+        {
+            if (_inputAction != input) return;
+
+            myGrid.GetManhattanNeighbours(myPosition)
+                .Where(n => n.Object != null && n.Object.InputDirection != EManhattanDirection.NONE)
+                .Do(d => report.ActivatedDirections.Add(d.Object.InputDirection));
+        }
+
+
+        public override void FireReleventAnimationEvents()
         {
             bool isOneActive = false;
 
-            element.Grid.GetManhattanNeighbours(element.Cooridnate)
+            myGrid.GetManhattanNeighbours(myPosition)
                 .Where(n => n.Object != null && n.Object.InputDirection != EManhattanDirection.NONE)
                 .Do(d => { d.Object.TriggerAnimation(_inputAction); isOneActive = true; });
 
             TriggerAnimation( isOneActive ? "ON" : "OFF" );
         }
 
-        public override void ResolveInputRecieved(string input, InputReport report, GridElement<Tile> element)
+
+
+        public override bool AreYouActivatingMe(GridElement<Tile> element) => true;
+
+
+
+        public override bool CanObjectBePushedAndUpdateReport(DiscreteVector2 direction, MovementReport report)
         {
-            if (_inputAction != input) return;
-
-            element.Grid.GetManhattanNeighbours(element.Cooridnate)
-                .Where(n => n.Object != null && n.Object.InputDirection != EManhattanDirection.NONE)
-                .Do(d => report.ActivatedDirections.Add(d.Object.InputDirection));
-        }
-
-        public override bool ResolveIsActivating(GridElement<Tile> element) => true;
-
-        public override void ResolveMovementRecieved(DiscreteVector2 direction, MovementReport report, GridElement<Tile> element)
-        {
-            return;
-        }
-
-        public override bool ResolvePushAttempt(DiscreteVector2 direction, MovementReport report, GridElement<Tile> element)
-        {
-            bool res = IsPushable_IfPushedToEmpty(direction, report, element);
-            if (res) report.PushedMove.Add(element);
+            bool res = IsPushable_IfPushedToEmpty(direction, report);
+            if (res) report.PushedMove.Add(myGrid.AsElement(myPosition));
             return res;
         }
     }

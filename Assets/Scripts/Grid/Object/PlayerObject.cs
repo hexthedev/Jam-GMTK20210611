@@ -13,47 +13,45 @@ namespace GMTK2021
 
         public override EManhattanDirection InputDirection => EManhattanDirection.NONE;
 
-        public override bool ReceivesMovement(GridElement<Tile> element) => true;
 
-        public override void ResolveAnimEvents(GridElement<Tile> element)
+
+        public override SoObject Copy()
         {
+            PlayerObject po = CreateInstance<PlayerObject>();
+            PopulateWithCopy(po);
+            return po;
         }
 
-        public override void ResolveInputRecieved(string input, InputReport report, GridElement<Tile> element)
-            => report.CanReceiveInput.Add(element);
+        public override void ProvideReportAboutInputRole(string input, InputReport report)
+            => report.CanReceiveInput.Add( myGrid.AsElement(myPosition) );
 
-        public override bool ResolveIsActivating(GridElement<Tile> element) => false;
+        public override bool CanBeMovedByInput() => true;
 
-        public override void ResolveMovementRecieved(DiscreteVector2 direction, MovementReport report, GridElement<Tile> element)
+        public override void ProvideReportAboutMovementCapabilities(DiscreteVector2 direction, MovementReport report)
         {
-            DiscreteVector2 targetIndex = element.Cooridnate + direction;
-            if (!element.Grid.IsInBounds(targetIndex))
+            DiscreteVector2 targetIndex = myPosition + direction;
+            if (!myGrid.IsInBounds(targetIndex))
             {
-                report.BlockedMove.Add(element);
+                report.BlockedMove.Add(myGrid.AsElement(myPosition));
                 return;
             }
 
-            Tile target = element.Grid.Get(targetIndex);
+            Tile target = myGrid.Get(targetIndex);
 
-            if(target.Object == null)
+            if (target.Object == null)
             {
-                report.FreeMove.Add(element);
+                report.FreeMove.Add(myGrid.AsElement(myPosition));
                 return;
             }
 
-            if (target.Object.ResolvePushAttempt(direction, report, element.Grid.AsElement(targetIndex)))
+            if (target.Object.CanObjectBePushedAndUpdateReport(direction, report))
             {
-                report.PusherMove.Add(element);
+                report.PusherMove.Add(myGrid.AsElement(myPosition));
             }
             else
             {
-                report.BlockedMove.Add(element);
+                report.BlockedMove.Add(myGrid.AsElement(myPosition));
             }
-        }
-
-        public override bool ResolvePushAttempt(DiscreteVector2 direction, MovementReport report, GridElement<Tile> element)
-        {
-            return false;
         }
     }
 }

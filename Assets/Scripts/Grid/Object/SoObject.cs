@@ -38,39 +38,119 @@ namespace GMTK2021
          
         public abstract EManhattanDirection InputDirection { get; }
 
-  
+        public DiscreteVector2 myPosition;
+        public Grid<Tile> myGrid;
 
-        // Are any anim events required
-        public abstract void ResolveAnimEvents(GridElement<Tile> element);
+
+
+
+        /*
+         * 1) Copy to protect serialized data
+         * 2) Initialize to provide inital position
+         * 3) A tick is provided to represent a turn has been performed
+         * 4) A back tick is provided to indicate that an undo ha been performed
+         * 
+         * 5) INPUT: Provide a report about who you are in input scheme
+         * 
+         * 6) MOVEMENT: Check Can be moved by input
+         * 7)         : Provide a report about movement capabilities
+         * 8)         : OnPush check push reaction
+         * 
+         * 9) ANIMATION : 
+         */
+
+        public abstract SoObject Copy();
+
+        public virtual void Init(DiscreteVector2 coord, Grid<Tile> grid)
+        {
+            myPosition = coord;
+            myGrid = grid;
+        }
+
+        public virtual void Tick(){}
+
+        public virtual void BackTick(){}
+
+
+
 
         // try to supply input
-        public abstract void ResolveInputRecieved(string input, InputReport report, GridElement<Tile> element);
-        
+        public virtual void ProvideReportAboutInputRole(string input, InputReport report) { }
+
+
+
         // Does this recieve movement
-        public abstract bool ReceivesMovement(GridElement<Tile> element);
+        public virtual bool CanBeMovedByInput() => false;
 
         // try to move
-        public abstract void ResolveMovementRecieved(DiscreteVector2 direction, MovementReport report, GridElement<Tile> element);
+        public virtual void ProvideReportAboutMovementCapabilities(DiscreteVector2 direction, MovementReport report) { }
 
         // can I be pushed
-        public abstract bool ResolvePushAttempt(DiscreteVector2 direction, MovementReport report, GridElement<Tile> element);
+        public virtual bool CanObjectBePushedAndUpdateReport(DiscreteVector2 direction, MovementReport report) { return false; }
+
+
 
         // Am I activting you
-        public abstract bool ResolveIsActivating(GridElement<Tile> element);
+        public virtual bool AreYouActivatingMe(GridElement<Tile> me) => false;
+
+        // Are any anim events required
+        public virtual void FireReleventAnimationEvents() { }
 
 
-        protected bool IsPushable_IfPushedToEmpty(DiscreteVector2 direction, MovementReport report, GridElement<Tile> element)
-        {
-            DiscreteVector2 target = element.Cooridnate + direction;
-            if (!element.Grid.IsInBounds(target)) return false;
-            
-            Tile t = element.Grid.Get(target);
 
-            if (t.Object == null) return true;
-            return t.Object.ResolvePushAttempt(direction, report, element.Grid.AsElement(target));
-        }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
         public void TriggerAnimation(string anim) => OnAnimationTriggered?.Invoke(anim);
+
+
+
+
+
+
+
+
+
+        /*
+         * PROTECTED HELPER METHODS
+         */
+
+        protected bool IsPushable_IfPushedToEmpty(DiscreteVector2 direction, MovementReport report)
+        {
+            DiscreteVector2 target = myPosition + direction;
+            if (!myGrid.IsInBounds(target)) return false;
+
+            Tile t = myGrid.Get(target);
+
+            if (t.Object == null) return true;
+            return t.Object.CanObjectBePushedAndUpdateReport(direction, report);
+        }
+
+        protected void PopulateWithCopy(SoObject obj)
+        {
+            obj.IsSlideAnimated = IsSlideAnimated;
+            obj.Offset = Offset;
+            obj.Sprite = Sprite;
+            obj.Controller = Controller;
+            obj.SpriteSwapAnimNames = SpriteSwapAnimNames;
+            obj.SpriteSwapSprites = SpriteSwapSprites;
+        }
+
+
+
+
     }
 }

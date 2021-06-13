@@ -4,23 +4,33 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
+using UnityEngine;
+
 namespace GMTK2021
 {
     public class TileGrid : Grid<Tile>
     {
         private Stack<ObjectTransaction[]> _history = new Stack<ObjectTransaction[]>();
 
-        public TileGrid(DiscreteVector2 size) : base(size, i => new Tile()) { }
+        public TileGrid(DiscreteVector2 size) : base(size, (i, g) => new Tile()) { }
 
-        public TileGrid(DiscreteVector2 size, Func<DiscreteVector2, Tile> factory) : base(size, factory) { }
+        public TileGrid(DiscreteVector2 size, Func<DiscreteVector2, Grid<Tile>, Tile> factory) : base(size, factory) { }
 
         public static TileGrid ConstructFrom(DiscreteVector2 size, Tile[] tiles)
         {
             return new TileGrid(size, Factory);
         
-            Tile Factory(DiscreteVector2 coord)
+            Tile Factory(DiscreteVector2 coord, Grid<Tile> grid)
             {
-                return tiles[coord.X + size.X * coord.Y];
+                Tile t = tiles[coord.X + size.X * coord.Y];
+
+                if (Application.isPlaying)
+                {
+                    if (t.Object != null) t.Object = t.Object.Copy();
+                }
+
+                if (t.Object != null) t.Object.Init(coord, grid);
+                return t;
             }        
         }
 
@@ -36,7 +46,7 @@ namespace GMTK2021
             }
 
             InputReport inputReport = new InputReport();
-            ElementwiseAction((t, e) => { if (t.Object != null) t.Object.ResolveInputRecieved(input, inputReport, e);});
+            ElementwiseAction((t, e) => { if (t.Object != null) t.Object.ProvideReportAboutInputRole(input, inputReport);});
             if (!inputReport.HasValidInput) return false;
 
             DiscreteVector2 inputDirection = UTEManhattanDirections.AsDiscreteVector2(inputReport.ActivatedDirections);
@@ -45,13 +55,17 @@ namespace GMTK2021
 
             MovementReport moveReport = new MovementReport();
             foreach (GridElement<Tile> el in inputReport.CanReceiveInput)
-                Get(el.Cooridnate).Object.ResolveMovementRecieved(inputDirection, moveReport, el);
+                Get(el.Cooridnate).Object.ProvideReportAboutMovementCapabilities(inputDirection, moveReport);
 
             if (moveReport.CanMoveList.Count() == 0) return false;
 
             transactions = GetTransactions(moveReport, inputDirection);
             PerformObjectTranscations(transactions);
             _history.Push(transactions);
+            ElementwiseAction(t =>
+            {
+                if (t.Object != null) t.Object.Tick();
+            });
             return true;
         }
 
@@ -87,6 +101,8 @@ namespace GMTK2021
                 {
                     initTile.Object = null;
                 }
+
+                targetTile.Object.myPosition = transaction.NextIndex;
             }
         }
 
@@ -110,6 +126,10 @@ namespace GMTK2021
             }
 
             PerformObjectTranscations(inverse);
+            ElementwiseAction(t =>
+            {
+                if (t.Object != null) t.Object.BackTick();
+            });
             return true;
         }
 

@@ -156,7 +156,7 @@ namespace GMTK2021
             _objectRenderGrid.Clear();
         }
 
-        private TileRenderer SpawnTileRenderer(DiscreteVector2 coord)
+        private TileRenderer SpawnTileRenderer(DiscreteVector2 coord, Grid<TileRenderer> g)
         {
             TileRenderer renderer = Instantiate(_tilePrefab, _tileParent);
             renderer.ManagedTile = _dataGrid.Get(coord);
@@ -223,7 +223,7 @@ namespace GMTK2021
             _dataGrid.ElementwiseAction(DoAnimUpdate);
             void DoAnimUpdate(Tile t, GridElement<Tile> ge)
             {
-                if (t.Object != null) t.Object.ResolveAnimEvents(ge);
+                if (t.Object != null) t.Object.FireReleventAnimationEvents();
             }
 
             _tileRenderGrid.ElementwiseAction(DoRender);

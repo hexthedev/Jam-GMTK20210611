@@ -14,11 +14,7 @@ namespace GMTK2021
         private string _inputAction;
 
         [SerializeField]
-        private EManhattanDirection _startDirection;
-
-        bool _isStarted = false;
-
-        private EManhattanDirection _currentDir;
+        private EManhattanDirection[] _directionLoop;
 
 
         public override bool IsPlayer => true;
@@ -27,22 +23,74 @@ namespace GMTK2021
 
         public override EManhattanDirection InputDirection => EManhattanDirection.NONE;
 
-        public override bool ReceivesMovement(GridElement<Tile> element) => true;
+
+        private int index = 0;
 
 
 
-        public override void ResolveAnimEvents(GridElement<Tile> element)
+
+
+        public override SoObject Copy()
         {
-            DiscreteVector2 activeDir = UTEManhattanDirections.AsDiscreteVector2(_currentDir);
-            DiscreteVector2 target = element.Cooridnate + activeDir;
+            GateControlObject po = CreateInstance<GateControlObject>();
+            PopulateWithCopy(po);
+            po._inputAction = _inputAction;
+            po._directionLoop = _directionLoop;
+            return po;
+        }
 
-            if (!element.Grid.IsInBounds(target))
+        public override void Tick()
+        {
+            index++;
+            index = index % _directionLoop.Length;
+        }
+
+        public override void BackTick()
+        {
+            index--;
+            if (index < 0) index = _directionLoop.Length - 1;
+        }
+
+        public override void ProvideReportAboutInputRole(string input, InputReport report)
+        {
+            if (_inputAction != input) return;
+
+            DiscreteVector2 target = myPosition + UTEManhattanDirections.AsDiscreteVector2(_directionLoop[index]);
+
+            if (!myGrid.IsInBounds(target))
+            {
+                return;
+            }
+
+            Tile t = myGrid.Get(target);
+
+            if (t.Object == null || t.Object.InputDirection == EManhattanDirection.NONE)
+            {
+                return;
+            }
+
+            report.ActivatedDirections.Add(t.Object.InputDirection);
+        }
+
+        public override bool CanObjectBePushedAndUpdateReport(DiscreteVector2 direction, MovementReport report)
+        {
+            bool res = IsPushable_IfPushedToEmpty(direction, report);
+            if (res) report.PushedMove.Add(myGrid.AsElement(myPosition));
+            return res;
+        }
+
+        public override void FireReleventAnimationEvents()
+        {
+            DiscreteVector2 activeDir = UTEManhattanDirections.AsDiscreteVector2(_directionLoop[index]);
+            DiscreteVector2 target = myPosition + activeDir;
+
+            if (!myGrid.IsInBounds(target))
             {
                 TriggerAnimation("OFF");
                 return;
             }
 
-            Tile t = element.Grid.Get(element.Cooridnate + activeDir);
+            Tile t = myGrid.Get(myPosition + activeDir);
 
             if(t.Object == null || t.Object.InputDirection == EManhattanDirection.NONE)
             {
@@ -54,69 +102,12 @@ namespace GMTK2021
             TriggerAnimation("ON");
         }
 
-        public override void ResolveInputRecieved(string input, InputReport report, GridElement<Tile> element)
+
+        public override bool AreYouActivatingMe(GridElement<Tile> me)
         {
-            if (!_isStarted)
-            {
-                _currentDir = _startDirection;
-                _isStarted = true;
-            }
-
-            switch (_currentDir)
-            {
-                case EManhattanDirection.DOWN: _currentDir = EManhattanDirection.LEFT; break;
-                case EManhattanDirection.LEFT: _currentDir = EManhattanDirection.UP; break;
-                case EManhattanDirection.UP: _currentDir = EManhattanDirection.RIGHT; break;
-                case EManhattanDirection.RIGHT: _currentDir = EManhattanDirection.DOWN; break;
-            }
-
-            if (_inputAction != input) return;
-            
-            DiscreteVector2 activeDir = new DiscreteVector2
-            (
-                _currentDir == EManhattanDirection.DOWN || _currentDir == EManhattanDirection.UP ? 0 : _currentDir == EManhattanDirection.LEFT ? -1 : 1,
-                _currentDir == EManhattanDirection.LEFT || _currentDir == EManhattanDirection.RIGHT ? 0 : _currentDir == EManhattanDirection.DOWN ? -1 : 1
-            );
-
-            DiscreteVector2 target = element.Cooridnate + activeDir;
-
-            if (!element.Grid.IsInBounds(target))
-            {
-                return;
-            }
-
-            Tile t = element.Grid.Get(element.Cooridnate + activeDir);
-
-            if (t.Object == null || t.Object.InputDirection == EManhattanDirection.NONE)
-            {
-                return;
-            }
-
-            report.ActivatedDirections.Add(t.Object.InputDirection);
-        }
-        
-
-        public override void ResolveMovementRecieved(DiscreteVector2 direction, MovementReport report, GridElement<Tile> element)
-        {
-
-
-            return;
-        }
-
-        public override bool ResolvePushAttempt(DiscreteVector2 direction, MovementReport report, GridElement<Tile> element)
-        {
-            bool res = IsPushable_IfPushedToEmpty(direction, report, element);
-            if (res) report.PushedMove.Add(element);
-            return res;
-        }
-
-        public override bool ResolveIsActivating(GridElement<Tile> element)
-        {
-            DiscreteVector2 idx = element.Cooridnate - UTEManhattanDirections.AsDiscreteVector2(_currentDir);
-
-            if (!element.Grid.IsInBounds(idx)) return false;
-            Tile t = element.Grid.Get(idx);
-            return t.Object == this;
+            DiscreteVector2 activating = myPosition + UTEManhattanDirections.AsDiscreteVector2(_directionLoop[index]);
+            bool isAct = me.Cooridnate == activating;
+            return isAct;
         }
     }
 }

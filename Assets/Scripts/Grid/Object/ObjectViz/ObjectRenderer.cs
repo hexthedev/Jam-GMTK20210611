@@ -87,7 +87,7 @@ namespace GMTK2021
 
         public void ResetPos()
         {
-            _animator.Play("Idle");
+            //_animator.Play("Idle");
             transform.localPosition = transform.localPosition + _lastSlide;
             _lastSlide = Vector3.zero;
         }

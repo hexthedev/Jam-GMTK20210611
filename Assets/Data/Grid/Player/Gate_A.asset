@@ -23,4 +23,4 @@ MonoBehaviour:
   - {fileID: -2288021195130185437, guid: 184c0a67462b7f64ebae651c3f54bb45, type: 3}
   - {fileID: 3501455699521706480, guid: 184c0a67462b7f64ebae651c3f54bb45, type: 3}
   _inputAction: A
-  _startDirection: 2
+  _directionLoop: 0300000002000000040000000100000000000000
