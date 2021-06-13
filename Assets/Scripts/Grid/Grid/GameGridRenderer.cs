@@ -124,6 +124,8 @@ namespace GMTK2021
 
         public void InitGrid(SoGameGrid serializedGrid)
         {
+            SerializedGrid = serializedGrid;
+
             if (this == null) return;
             ClearParents();
 
@@ -262,6 +264,8 @@ namespace GMTK2021
 
         public void ReceiveInput(CallbackContext Context)
         {
+            if (Context.action.name == "Reload") InitGrid(SerializedGrid);
+
             if (InputState == false) return;
 
             if (Context.performed)

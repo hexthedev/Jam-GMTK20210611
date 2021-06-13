@@ -2,6 +2,9 @@ using HexCS.Core;
 
 using System.Collections;
 using System.Collections.Generic;
+
+using TMPro;
+
 using UnityEngine;
 using UnityEngine.Events;
 
@@ -27,6 +30,10 @@ namespace GMTK2021
 
         public Color[] bgColors;
 
+        public TMP_Text LevelIndicator;
+
+        public string[] Verbs;
+
         public void Start()
         {
             RenderNext();
@@ -44,6 +51,8 @@ namespace GMTK2021
                 Renderer.Clear();
                 Renderer.InitGrid(Levels[levelIndex]);
             }
+
+            LevelIndicator.text = $"{Verbs.RandomElement()} {Levels[levelIndex].name}";
         }
 
         public void HandleGameStatus(GamestateReport rep)

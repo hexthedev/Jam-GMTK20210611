@@ -9,6 +9,8 @@ namespace GMTK2021
     [CreateAssetMenu(fileName = "GameGrid", menuName = "GMTK/GameGrid")]
     public class SoGameGrid : ScriptableObject
     {
+        public string name;
+
         public int Width;
         public int Height;
 
