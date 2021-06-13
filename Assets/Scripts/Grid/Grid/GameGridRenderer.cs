@@ -141,6 +141,7 @@ namespace GMTK2021
                     if (t.Object == null) return;
 
                     ObjectRenderer obr = Instantiate(_objectPrefab, _objectParent);
+                    obr.transform.localPosition += new Vector3(0, 0, -(i.Grid.Size.Y - i.Cooridnate.Y));
 
                     if (obr != null)
                     {
@@ -236,6 +237,11 @@ namespace GMTK2021
 
             _tileRenderGrid.ElementwiseAction(DoRender);
             void DoRender(TileRenderer rend) => rend.RenderTile();
+        
+            foreach(ObjectRenderer ob in _objectRenderGrid.Values)
+            {
+                ob.transform.localPosition = new Vector3(ob.transform.localPosition.x, ob.transform.localPosition.y, -(ob.Object.myGrid.Size.Y - ob.Object.myPosition.Y));
+            }
         }
         #endregion
 

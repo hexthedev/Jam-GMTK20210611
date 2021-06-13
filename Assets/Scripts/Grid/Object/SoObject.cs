@@ -113,7 +113,6 @@ namespace GMTK2021
 
 
 
-
         public void TriggerAnimation(string anim) => OnAnimationTriggered?.Invoke(anim);
 
 
