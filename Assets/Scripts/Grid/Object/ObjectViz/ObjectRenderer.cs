@@ -81,6 +81,7 @@ namespace GMTK2021
         {
             if (!_object.IsSlideAnimated) return;
             ResetPos();
+            Object.TriggerAnimation("Idle");
             _quad.StopSlide();
         }
 

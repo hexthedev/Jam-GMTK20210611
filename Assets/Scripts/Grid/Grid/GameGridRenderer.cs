@@ -22,7 +22,7 @@ namespace GMTK2021
     [ExecuteAlways]
     public class GameGridRenderer : MonoBehaviour
     {
-        private const float cSlideSpeed = 1;
+        private const float cSlideSpeed = 0.25f;
 
         [Header("Visual Options")]
         public SoTileTheme Theme;
@@ -179,7 +179,7 @@ namespace GMTK2021
             {
                 DiscreteVector2 dir = obt.NextIndex - obt.LastIndex;
 
-                if( dir == DiscreteVector2.Down) obt.TransactionObject.TriggerAnimation("Move_Down");
+                if (dir == DiscreteVector2.Down) obt.TransactionObject.TriggerAnimation("Move_Down");
                 if (dir == DiscreteVector2.Left) obt.TransactionObject.TriggerAnimation("Move_Left");
                 if (dir == DiscreteVector2.Right) obt.TransactionObject.TriggerAnimation("Move_Right");
                 if (dir == DiscreteVector2.Up) obt.TransactionObject.TriggerAnimation("Move_Up");
